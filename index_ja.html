@@ -67,7 +67,7 @@
           <h1 style="padding:0px 10px 0px 10px;">ADL</h1>
           <div style="padding:0px 8px 0px 8px;font-size:16px;color:white">Architecture Description Language</div>
           <div style="padding:0px 8px 0px 8px;font-size:12px;color:white">（ 旧称 CDS: Cloud Design Specification ） </div>
-          <div style="padding-bottom:30px;padding-top:10px;font-size:20px;color:white">Ver 2.0.0</div>
+          <div style="padding-bottom:30px;padding-top:10px;font-size:20px;color:white">Ver 3.0.0</div>
         </div>
       </div>
     </div>
@@ -239,7 +239,32 @@
             <code>メジャー番号.マイナー番号</code>は１つ以上の機能セットを指定することになります。そして<code>.パッチ番号</code>は
             後方互換性のあるバグ修正を指定することになります。
             よって、パッチバージョンはツールの利用において考慮されるべきではありません。例えば1.0.0と1.0.1の間で、機能またはツールの区別はすべきではありません。
-            <hr class="hr-dot-bold my-7">
+                      <h6>3.0.0 と 2.x</h6>
+          <p>
+            3.0.0 ではトリガーの型を作り直しました（<a href="#s-trigger">Trigger objects</a>）。2.x の文書とは互換がありません。
+            2.x の型は、3.0.0 では次の型に対応します。
+            <code>webAccess</code> は、起点が市場・個人なら <code>sessionAccess</code>、起点が外部システムなら <code>messageAccess</code> です。
+            起点がアクターの <code>timedAction</code> は <code>messageAccess</code> です。
+            型の名前のほか、<code>sessionAccess</code>・<code>messageAccess</code>・<code>streamAccess</code> には <code>protocol</code> が必須です。
+          </p>
+          <div class="d-table table-responsive line-break">
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-primary text-white border">版</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">仕様書</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">スキーマ</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">3.0.x</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">この文書</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="v3/ja/reindeer-schema_cds.json">v3/ja/reindeer-schema_cds.json</a></p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">2.0.x</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="v2/index_ja.html">v2/index_ja.html</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="ja/reindeer-schema_cds.json">ja/reindeer-schema_cds.json</a></p>
+            </div>
+          </div>
+          <hr class="hr-dot-bold my-7">
           <h3 id="format">形式<a class="anchor" href="#format"></a></h3>
           <p>ADLドキュメントはJSONドキュメントです。妥当なJSONオブジェクトでなければなりません。</p>
           <p>仕様内のすべてのフィールド名は、大文字と小文字が<b>区別されます</b>。これには、
@@ -278,7 +303,7 @@
                 この文字列はADL自体の<a href="#versions">semantic version number</a>でなければなりません。
                 <code>reindeer</code>フィールドは、ADLドキュメントを解釈するためのツールに使用されるべきです。 これはinfo.versionフィールドとは関係ありません。
                 <br>
-                <span style="font-weight:bold;color:red">本仕様のバージョン（最新は2.0.x）をご指定ください。</span>
+                <span style="font-weight:bold;color:red">本仕様のバージョン（最新は3.0.x）をご指定ください。</span>
               </p>
             </div>
             <div class="d-table-row">
@@ -333,7 +358,7 @@
 
           <h6>JSON example</h6>
           <pre><code>{
-  <span class="token tag">"reindeer": </span>"2.0.0",
+  <span class="token tag">"reindeer": </span>"3.0.0",
   <span class="token tag">"self": </span>"adl.json"
   <span class="token tag">"info": </span>{
     <span class="token tag">"title": </span>{
@@ -704,6 +729,86 @@
 
 
           <hr class="hr-dot my-5">
+          <h3 id="s-actor-devices" class="font-italic">機器タイプのアクターオブジェクト<a class="anchor" href="#s-actor-devices"></a>
+          </h3>
+          <p>
+            このオブジェクトは、センサー、車載の機器、店舗の端末など、同じ種類の機器の集まりに関する情報を提供します。
+            外部システム（<code>externalSystem</code>）は1つのシステムを1つのアクターとして表し、台数を持ちません。機器（<code>devices</code>）は台数を持ちます。機器から届く通信の量を見積もるため、正しい台数を提供すべきです。
+          </p>
+          <h6>固定フィールド</h6>
+          <div class="d-table table-responsive line-break">
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-primary text-white border">フィールド名</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">種類 </p>
+              <p class="d-table-cell p-2 bg-primary text-white border">説明</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">type</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. 固定値： '<code>devices</code>'.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">title</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                アクターの名称です。
+                キーは<a href="https://www.iso.org/iso-639-language-codes.html">ISO 639-1</a>の2文字の言語コードでなければなりません。
+                そして値はUTF-8の文字列でなければなりません。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">description</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                アクターの説明です。
+                このテキストは外部ツールによる検索インデックスとして使われる可能性があります。
+                キーは<a href="https://www.iso.org/iso-639-language-codes.html">ISO 639-1</a>の2文字の言語コードでなければなりません。
+                そして値はUTF-8の文字列でなければなりません。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">num</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>integer</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. 本アクターを構成する機器の台数です。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">sourceIdentification</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>boolean</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                特定のIPアドレス範囲やドメイン名などで識別できるかどうかを意味します。
+                trueの場合、<code>identificationGroup</code> フィールドは必須です。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">identificationGroup</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">IPアドレス範囲やドメイン名など。
+                <code>sourceIdentification</code> フィールドがtrueの場合は必須です。そして、<code>sourceIdentification</code>
+                がfalseの場合、指定してはいけません。
+              </p>
+            </div>
+          </div>
+
+          <h6>JSON example</h6>
+          <pre><code>{
+  <span class="token tag">"type": "devices",</span>
+  <span class="token tag">"title": </span>{
+      <span class="token tag">"en": </span>"Delivery vehicles",
+      <span class="token tag">"ja": </span>"配送車両の車載の機器"
+  },
+  <span class="token tag">"description": </span>{
+      <span class="token tag">"en": </span>"GPS units in delivery vehicles that send their position every minute.",
+      <span class="token tag">"ja": </span>"位置を毎分送る配送車両の GPS 機器"
+  },
+  <span class="token tag">"num": </span>1200,
+  <span class="token tag">"sourceIdentification": </span>false
+}</code></pre>
+
+
+
+          <hr class="hr-dot my-5">
           <h3 id="s-actor-system" class="font-italic">外部システムタイプのアクターオブジェクト<a class="anchor" href="#s-actor-system"></a>
           </h3>
           <p>
@@ -913,7 +1018,7 @@
         <span class="token tag">"ru": </span>"Просмотр статического содержимого через Интернет"
   },
   <span class="token tag">"trigger": </span>{
-        <span class="token tag">"type": </span>"webAccess",
+        <span class="token tag">"type": </span>"sessionAccess",
         <span class="token tag">"..."</span>: "..."
   },
   <span class="token tag">"traffics": </span>{
@@ -1202,16 +1307,72 @@
             Trigger objects<a class="anchor" href="#s-trigger"></a>
           </h3>
           <p>
-            <a href="#s-usecase">ユースケース</a>の初期イベントに関する情報を提供します。
-            それはサーバへの人的なWebアクセス、または外部APIへの自動化された時限呼び出しである可能性があります。
+            <a href="#s-usecase">ユースケース</a>の処理が始まるきっかけを表します。
+            トリガーには5つの型があります。アクターから届くもの（Access）は届き方で3つに、システムの中で起きるもの（Action）は原因で2つに分けます。
+          </p>
+          <div class="d-table table-responsive line-break">
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-primary text-white border">型</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">起点（<code>start</code>）</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">負荷を表す欄</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">例</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-trigger-sessionaccess">sessionAccess</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">市場・個人のアクター</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>dau</code>・<code>pagesVisit</code>・<code>kbPage</code>・<code>reqPage</code>・<code>busyHours</code>・<code>postsVisit</code>・<code>kbPost</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Web やアプリの画面、VDI・RDP、業務端末</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-trigger-messageaccess">messageAccess</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">どのアクターでもよい</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>onlineRps</code>・<code>reqMonth</code>・<code>kbRequest</code>・<code>kbResponse</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">API の呼び出し、webhook、メール、SMS、MQTT の送信、SFTP でのファイルの受け渡し</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-trigger-streamaccess">streamAccess</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">どのアクターでもよい</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>concurrentConnections</code>・<code>hoursDay</code>・<code>kbpsUp</code>・<code>kbpsDown</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">通話、動画の取り込み、WebSocket、ゲーム、取引先からデータベースへの直接の接続</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-trigger-timedAction">timedAction</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">スケジューラのリソース</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>onlineRps</code>・<code>reqMonth</code>・<code>kbRequest</code>・<code>kbResponse</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">日次の集計、定時のデータ連携</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-trigger-stateaction">stateAction</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">状態の変化を知らせるリソース（アラーム・予算・検知器・バケットなど）</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>onlineRps</code>・<code>reqMonth</code>・<code>kbRequest</code>・<code>kbResponse</code>・<code>condition</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">アラームで当番に通知、予算の超過で止める、セキュリティの検知で隔離する、レプリケーションの失敗に対応する</p>
+            </div>
+          </div>
+          <h6>型の選び方</h6>
+          <ol>
+            <li>起点がアクターでなければ、時刻で始まるものは <code>timedAction</code>、状態で始まるものは <code>stateAction</code> です。</li>
+            <li>起点がアクターで、接続をつないだまま使うものは <code>streamAccess</code> です。</li>
+            <li>人が画面や端末で操作を繰り返すものは <code>sessionAccess</code>、1件ずつ送るもの（機械が呼ぶものを含む）は <code>messageAccess</code> です。</li>
+            <li>中継の仕組み（SQS・SNS・Kafka・DynamoDB Streams・ワークフローの中のイベント・認証の途中で呼ばれる処理など）は、トリガーとして書きません。起点のユースケースの <a href="#s-traffic">traffic</a> として書きます。</li>
+            <li>マネージドサービスの内部の処理（自動バックアップ・証明書の更新・オートスケーリングなど）と、デプロイの時だけ動く処理は、ユースケースにしません。</li>
+            <li>スケジューラや状態の変化を知らせるリソースがプロビジョニングファイルに無いときは、<code>timedAction</code>・<code>stateAction</code> のトリガーを作りません。</li>
+          </ol>
+          <h6 id="s-trigger-protocol">protocol<a class="anchor" href="#s-trigger-protocol"></a></h6>
+          <p>
+            <code>protocol</code> は受け口（トリガーのエンドポイントが通信を受け付ける口）のプロトコルを表す文字列です。<code>sessionAccess</code>・<code>messageAccess</code>・<code>streamAccess</code> では必須、<code>timedAction</code>・<code>stateAction</code> では任意です。
+            値は英小文字、数字、記号（<code>. + -</code>）で書きます。先頭は英小文字か数字です（<code>^[a-z0-9][a-z0-9.+-]*$</code>）。
+            推奨値は <code>https</code>・<code>http3</code>・<code>websocket</code>・<code>grpc</code>・<code>smtp</code>・<code>sms</code>・<code>sip</code>・<code>mqtt</code>・<code>amqp</code>・<code>sftp</code>・<code>rtmp</code>・<code>webrtc</code>・<code>udp</code>・<code>tcp</code>・<code>rdp</code>・<code>ssh</code> です。一覧に無い値も使えます。
           </p>
 
+
           <hr class="hr-dot my-5">
-          <h3 id="s-trigger-webaccess" class="font-italic">Webアクセスタイプのトリガーオブジェクト<a class="anchor"
-              href="#s-trigger-webaccess"></a></h3>
+          <hr class="hr-dot my-5">
+          <span id="s-trigger-webaccess"></span>
+          <h3 id="s-trigger-sessionaccess" class="font-italic">セッションアクセスタイプのトリガーオブジェクト<a class="anchor"
+              href="#s-trigger-sessionaccess"></a></h3>
           <p>
-            これはアクターによるトリガーの一種です。アクターによるクラウドリソースへのWebアクセスを表現します。
-            アクターは人間または外部システムの可能性があります。
+            これはアクターによるトリガーの一種です。市場・個人のアクターが、画面や端末を操作して対話を繰り返すアクセスを表現します（Web やアプリの画面、VDI・RDP、業務端末など）。
+            2.x の <code>webAccess</code>（起点が市場・個人）は、この型になります。
           </p>
           <h6>固定フィールド</h6>
           <div class="d-table table-responsive line-break">
@@ -1223,7 +1384,7 @@
             <div class="d-table-row">
               <p class="d-table-cell p-2 bg-white text-dark border">type</p>
               <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
-              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. 固定値： '<code>webAccess</code>'.
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. 固定値： '<code>sessionAccess</code>'.
               </p>
             </div>
             <div class="d-table-row">
@@ -1261,6 +1422,12 @@
               <p class="d-table-cell p-2 bg-white text-dark border">[ <code>boolean</code> ]</p>
               <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
                 このトリガーのエンドポイントにおける、接続元IP、ドメインなどの接続制限の有無を示します。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">protocol</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. 受け口のプロトコルです。<a href="#s-trigger-protocol">protocol</a> を参照してください。
               </p>
             </div>
             <div class="d-table-row">
@@ -1318,9 +1485,8 @@
             </div>
             <div class="d-table-row">
               <p class="d-table-cell p-2 bg-white text-dark border">start</p>
-              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a></p>
-              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
-                <a href="#s-actor">actor objects</a>への参照です。このトリガーの開始点を意味します。
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>#/actors/&lt;key&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. このトリガーの開始点です。市場（<code>market</code>）または個人（<code>persons</code>）タイプの <a href="#s-actor">actor object</a> への参照でなければなりません。アクターの型はスキーマでは検査されないため、文書を作るツールが確かめるべきです。
               </p>
             </div>
             <div class="d-table-row">
@@ -1373,11 +1539,11 @@
 
           <h6>JSON Example</h6>
           <pre><code>{
-  <span class="token tag">"type": "webAccess"</span>,
+  <span class="token tag">"type": "sessionAccess"</span>,
+  <span class="token tag">"protocol": </span>"https",
   <span class="token tag">"description": </span>{
-    <span class="token tag">"en": </span>"API call for movie data acquisition.",
-    <span class="token tag">"ja": </span>"動画データ取得のためのAPI呼び出し。",
-    <span class="token tag">"ru": </span>"API вызов для сбора данных фильма"
+    <span class="token tag">"en": </span>"Customers browse and order on the shopping site.",
+    <span class="token tag">"ja": </span>"お客様がショッピングサイトを見て注文する"
   },
   <span class="token tag">"infoType": </span>{
         <span class="token tag">"$ref": </span>"#/components/infoTypes/general"
@@ -1390,7 +1556,7 @@
   <span class="token tag">"kbPage": </span>{<code>"max":</code> 1024, <code>"min":</code> 1024},
   <span class="token tag">"reqPage": </span>{<code>"max":</code> 100, <code>"min":</code> 100},
   <span class="token tag">"busyHours": </span>{<code>"max":</code> 3, <code>"min":</code> 3},
-  <span class="token tag">"postRatio": </span>{<code>"max":</code> 0.1, <code>"min":</code> 0.001},
+  <span class="token tag">"postsVisit": </span>{<code>"max":</code> 0.1, <code>"min":</code> 0.001},
   <span class="token tag">"kbPost": </span>{<code>"max":</code> 100, <code>"min":</code> 100},
   <span class="token tag">"start": </span>{
         <span class="token tag">"$ref": </span>"#/actors/customer"
@@ -1399,9 +1565,8 @@
         {<span class="token tag">"$ref": </span>"awsCloudEnvironment.json#/resources/cloudFront"}
   ],
   <span class="token tag">"endpointTitle": </span>{
-    <span class="token tag">"en": </span>"LoadBalancer",
-    <span class="token tag">"ja": </span>"ロードバランサ",
-    <span class="token tag">"ru": </span>"Балансировщик нагрузки"
+    <span class="token tag">"en": </span>"Shopping site",
+    <span class="token tag">"ja": </span>"ショッピングサイト"
   },
   <span class="token tag">"storedRatio": </span>{<code>"max":</code> 0.3, <code>"min":</code> 0.1},
   <span class="token tag">"storedInfoType": </span>{
@@ -1414,13 +1579,378 @@
   }
 }</code></pre>
 
+          <hr class="hr-dot my-5">
+          <hr class="hr-dot my-5">
+          <h3 id="s-trigger-messageaccess" class="font-italic">メッセージアクセスタイプのトリガーオブジェクト<a class="anchor"
+              href="#s-trigger-messageaccess"></a></h3>
+          <p>
+            これはアクターによるトリガーの一種です。アクターが1件ずつ送り届けるアクセスを表現します（API の呼び出し、webhook、メール、SMS、MQTT の送信、SFTP のファイルなど）。
+            起点はどのアクターでもかまいません（市場・個人・外部システム・機器）。2.x の <code>webAccess</code>（起点が外部システム）と、起点がアクターの <code>timedAction</code> は、この型になります。
+          </p>
+          <h6>固定フィールド</h6>
+          <div class="d-table table-responsive line-break">
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-primary text-white border">フィールド名</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">種類</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">説明</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">type</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. 固定値：
+                '<code>messageAccess</code>'.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">description</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                トリガーの説明です。トリガーの目的を端的に示すメモであるべきです。
+                キーは<a href="https://www.iso.org/iso-639-language-codes.html">ISO 639-1</a>の2文字の言語コードでなければなりません。
+                そして値はUTF-8の文字列でなければなりません。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">infoType</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>#/components/infoTypes/&lt;key&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                <a href="#s-infoType">InfoType object</a>への参照です。
+                トリガーが扱う情報の種類を明示します。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">ports</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>integer</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                トリガーのエンドポイントが利用するポート番号です。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">internet</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>boolean</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                トリガーがインターネット経由の通信を行うかどうかを明示します。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">restriction</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>boolean</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                トリガーのエンドポイントが接続元IP、ドメイン、その他の接続制限をかけているかどうかを明示します。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">protocol</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. 受け口のプロトコルです。<a href="#s-trigger-protocol">protocol</a> を参照してください。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">onlineRps</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                このトリガーが発火した時の、1秒当たりの要求数。 開始点（<code>start</code>フィールド）からエンドポイント（<code>end</code>フィールド）に
+                対するリクエストの要求性能を明示します。
+                たとえば、毎週月曜日の朝にバッチシステムが動作し、各バッチが1秒間に2回のスループットで外部APIにアクセスする場合は<code>2.0</code>です。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">reqMonth</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                開始点からエンドポイントへの月間リクエスト数です。
+                たとえば、バッチシステムが毎月1000人に3回メールマガジンを送信する場合、この値は<code>9000</code>になります。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">kbRequest</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                開始点からエンドポイントに対するリクエストあたりのデータサイズをKB単位で明示します。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">kbResponse</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                開始点からエンドポイントへのリクエスト毎に生じるレスポンスのデータサイズをKB単位で明示します。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">start</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>#/actors/&lt;key&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. このトリガーの開始点です。<a href="#s-actor">actor object</a> への参照でなければなりません。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">end</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <a href="#s-ref">Reference object</a> (<code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code>) ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. このトリガーのエンドポイントです。<a href="#s-resource">resource object</a> に記載されたリソースへの参照でなければなりません。プロビジョニングファイル参照（<code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code>）のみ有効です。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">endpointTitle</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                エンドポイントの名称です。キーは<a href="https://www.iso.org/iso-639-language-codes.html">ISO
+                  639-1</a>の2文字の言語コードでなければなりません。
+                そして値はUTF-8の文字列でなければなりません。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">storedRatio</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                <code>end</code>が受信したデータのうち、<code>end</code>に保管されるデータサイズの比率を示します。
+                例えば、このトリガーでアクターが<code>end</code>に送信するデータの全てを<code>end</code>上で保管する場合、この値は1.0になります。データを
+                保管しない場合は0です。
+                </span>
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">storedInfoType</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>#/components/infoTypes/&lt;key&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">
+                <a href="#s-infoType">InfoType object</a>への参照です。このトリガーの<code>end</code>が保管するデータの種類を示します。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">storageDescription</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">
+                ストレージの説明です。
+                このテキストは外部ツールによる検索インデックスとして使われる可能性があり、ストレージの目的を的確に表現すべきです。
+                キーは<a href="https://www.iso.org/iso-639-language-codes.html">ISO 639-1</a>の2文字の言語コードでなければなりません。
+                そして値はUTF-8の文字列でなければなりません。
+              </p>
+            </div>
+          </div>
+          <h6>JSON Example</h6>
+          <pre><code>{
+  <span class="token tag">"type": "messageAccess"</span>,
+  <span class="token tag">"protocol": </span>"https",
+  <span class="token tag">"description": </span>{
+    <span class="token tag">"en": </span>"The partner system sends order data through the API.",
+    <span class="token tag">"ja": </span>"取引先のシステムが API で注文データを送る"
+  },
+  <span class="token tag">"infoType": </span>{
+        <span class="token tag">"$ref": </span>"#/components/infoTypes/general"
+  },
+  <span class="token tag">"ports": </span>[443],
+  <span class="token tag">"internet": </span>false,
+  <span class="token tag">"restriction": </span>false,
+  <span class="token tag">"onlineRps": </span>{<code>"max":</code> 3, <code>"min":</code> 1},
+  <span class="token tag">"reqMonth": </span>{<code>"max":</code> 9000, <code>"min":</code> 5000},
+  <span class="token tag">"kbRequest": </span>{<code>"max":</code> 0.01, <code>"min":</code> 0.01},
+  <span class="token tag">"kbResponse": </span>{<code>"max":</code> 1, <code>"min":</code> 1},
+  <span class="token tag">"start": </span>{
+        <span class="token tag">"$ref": </span>"#/actors/partnerSystem"
+  },
+  <span class="token tag">"end": </span>[
+        {<span class="token tag">"$ref": </span>"awsCloudEnvironment.json#/resources/apiGateway"}
+  ],  
+  <span class="token tag">"endpointTitle": </span>{
+    <span class="token tag">"en": </span>"Order API",
+    <span class="token tag">"ja": </span>"注文 API"
+  },
+  <span class="token tag">"storedRatio": </span>{<code>"max":</code> 0.3, <code>"min":</code> 0.1},
+  <span class="token tag">"storedInfoType": </span>{
+    <span class="token tag">"$ref": </span>"#/components/infoTypes/general"
+  },
+  <span class="token tag">"storageDescription": </span>{
+    <span class="token tag">"en": </span>"Logging for API usage tracing.",
+    <span class="token tag">"ja": </span>"API利用状況把握のためのログ保管",
+    <span class="token tag">"ru": </span>"Хранение журнала для статуса использования API"
+  }
 
+}</code></pre>
 
           <hr class="hr-dot my-5">
+          <hr class="hr-dot my-5">
+          <h3 id="s-trigger-streamaccess" class="font-italic">ストリームアクセスタイプのトリガーオブジェクト<a class="anchor"
+              href="#s-trigger-streamaccess"></a></h3>
+          <p>
+            これはアクターによるトリガーの一種です。アクターが接続をつないだまま通信するアクセスを表現します（通話、動画の取り込み、WebSocket、ゲーム、取引先からデータベースへの直接の接続など）。
+            この型では、要求の数ではなく、同時に保たれる接続の数と帯域で負荷を表します。
+          </p>
+          <h6>固定フィールド</h6>
+          <div class="d-table table-responsive line-break">
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-primary text-white border">フィールド名</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">種類</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">説明</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">type</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. 固定値：
+                '<code>streamAccess</code>'.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">description</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                トリガーの説明です。トリガーの目的を端的に示すメモであるべきです。
+                キーは<a href="https://www.iso.org/iso-639-language-codes.html">ISO 639-1</a>の2文字の言語コードでなければなりません。
+                そして値はUTF-8の文字列でなければなりません。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">infoType</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>#/components/infoTypes/&lt;key&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                <a href="#s-infoType">InfoType object</a>への参照です。
+                トリガーが扱う情報の種類を明示します。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">ports</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>integer</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                トリガーのエンドポイントが利用するポート番号です。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">internet</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>boolean</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                トリガーがインターネット経由の通信を行うかどうかを明示します。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">restriction</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>boolean</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                トリガーのエンドポイントが接続元IP、ドメイン、その他の接続制限をかけているかどうかを明示します。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">protocol</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. 受け口のプロトコルです。<a href="#s-trigger-protocol">protocol</a> を参照してください。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">concurrentConnections</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. 同時に保たれる接続の数です。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">hoursDay</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. 1つの接続が1日に保たれる時間です（単位: 時間）。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">kbpsUp</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. 1つの接続の上り（アクターから <code>end</code> へ）の平均の帯域です（単位: kbps）。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">kbpsDown</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. 1つの接続の下り（<code>end</code> からアクターへ）の平均の帯域です（単位: kbps）。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">start</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>#/actors/&lt;key&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. このトリガーの開始点です。<a href="#s-actor">actor object</a> への参照でなければなりません。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">end</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <a href="#s-ref">Reference object</a> (<code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code>) ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. このトリガーのエンドポイントです。<a href="#s-resource">resource object</a> に記載されたリソースへの参照でなければなりません。プロビジョニングファイル参照（<code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code>）のみ有効です。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">endpointTitle</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                エンドポイントの名称です。キーは<a href="https://www.iso.org/iso-639-language-codes.html">ISO
+                  639-1</a>の2文字の言語コードでなければなりません。
+                そして値はUTF-8の文字列でなければなりません。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">storedRatio</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                <code>end</code>が受信したデータのうち、<code>end</code>に保管されるデータサイズの比率を示します。
+                例えば、このトリガーでアクターが<code>end</code>に送信するデータの全てを<code>end</code>上で保管する場合、この値は1.0になります。データを
+                保管しない場合は0です。
+                </span>
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">storedInfoType</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>#/components/infoTypes/&lt;key&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">
+                <a href="#s-infoType">InfoType object</a>への参照です。このトリガーの<code>end</code>が保管するデータの種類を示します。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">storageDescription</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">
+                ストレージの説明です。
+                このテキストは外部ツールによる検索インデックスとして使われる可能性があり、ストレージの目的を的確に表現すべきです。
+                キーは<a href="https://www.iso.org/iso-639-language-codes.html">ISO 639-1</a>の2文字の言語コードでなければなりません。
+                そして値はUTF-8の文字列でなければなりません。
+              </p>
+            </div>
+          </div>
+          <h6>JSON Example</h6>
+          <pre><code>{
+  <span class="token tag">"type": "streamAccess"</span>,
+  <span class="token tag">"protocol": </span>"websocket",
+  <span class="token tag">"description": </span>{
+    <span class="token tag">"en": </span>"Players stay connected to the game server over WebSocket.",
+    <span class="token tag">"ja": </span>"プレイヤーが WebSocket でゲームのサーバにつないだままにする"
+  },
+  <span class="token tag">"infoType": </span>{
+        <span class="token tag">"$ref": </span>"#/components/infoTypes/general"
+  },
+  <span class="token tag">"ports": </span>[443],
+  <span class="token tag">"internet": </span>true,
+  <span class="token tag">"restriction": </span>false,
+  <span class="token tag">"concurrentConnections": </span>{<code>"max":</code> 2000, <code>"min":</code> 200},
+  <span class="token tag">"hoursDay": </span>{<code>"max":</code> 8, <code>"min":</code> 2},
+  <span class="token tag">"kbpsUp": </span>{<code>"max":</code> 16, <code>"min":</code> 4},
+  <span class="token tag">"kbpsDown": </span>{<code>"max":</code> 64, <code>"min":</code> 16},
+  <span class="token tag">"start": </span>{
+        <span class="token tag">"$ref": </span>"#/actors/players"
+  },
+  <span class="token tag">"end": </span>[
+        {<span class="token tag">"$ref": </span>"awsCloudEnvironment.json#/resources/websocketApi"}
+  ],  
+  <span class="token tag">"endpointTitle": </span>{
+    <span class="token tag">"en": </span>"Game server",
+    <span class="token tag">"ja": </span>"ゲームのサーバ"
+  },
+  <span class="token tag">"storedRatio": </span>{<code>"max":</code> 0.3, <code>"min":</code> 0.1},
+  <span class="token tag">"storedInfoType": </span>{
+    <span class="token tag">"$ref": </span>"#/components/infoTypes/general"
+  },
+  <span class="token tag">"storageDescription": </span>{
+    <span class="token tag">"en": </span>"Logging for API usage tracing.",
+    <span class="token tag">"ja": </span>"API利用状況把握のためのログ保管",
+    <span class="token tag">"ru": </span>"Хранение журнала для статуса использования API"
+  }
+
+}</code></pre>
+
+          <hr class="hr-dot my-5">
+          <hr class="hr-dot my-5">
           <h3 id="s-trigger-timedAction" class="font-italic">時限アクションタイプのトリガーオブジェクト<a class="anchor"
-              href="#s-trigger-webaccess"></a></h3>
-          <p>これはアクターまたはコンピューティングリソースによって発動されるタイプのトリガーです。
-            アクターまたはcloud computingリソースからの時限アクションを表現します。
+              href="#s-trigger-timedAction"></a></h3>
+          <p>
+            これはシステムの中で起きるトリガーの一種です。スケジューラのリソースが決まった時刻に始める処理を表現します（日次の集計、定時のデータ連携など）。
+            3.0.0 では起点はリソースだけです。アクターが起点のものは <a href="#s-trigger-messageaccess">messageAccess</a> で書きます。
           </p>
           <h6>固定フィールド</h6>
           <div class="d-table table-responsive line-break">
@@ -1475,6 +2005,12 @@
               </p>
             </div>
             <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">protocol</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">受け口のプロトコルです（任意）。<a href="#s-trigger-protocol">protocol</a> を参照してください。
+              </p>
+            </div>
+            <div class="d-table-row">
               <p class="d-table-cell p-2 bg-white text-dark border">onlineRps</p>
               <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
               <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
@@ -1507,10 +2043,8 @@
             </div>
             <div class="d-table-row">
               <p class="d-table-cell p-2 bg-white text-dark border">start</p>
-              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a></p>
-              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
-                トリガーの開始点を示します。<a href="#s-actor">actor object</a> または <a href="#s-resource">resource
-                  object</a>への参照でなければなりません。
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. このトリガーの開始点です。決まった時刻に処理を始めるスケジューラの <a href="#s-resource">resource object</a> への参照でなければなりません。
               </p>
             </div>
             <div class="d-table-row">
@@ -1563,9 +2097,8 @@
           <pre><code>{
   <span class="token tag">"type": "timedAction"</span>,
   <span class="token tag">"description": </span>{
-    <span class="token tag">"en": </span>"API call for movie data acquisition.",
-    <span class="token tag">"ja": </span>"動画データ取得のためのAPI呼び出し。",
-    <span class="token tag">"ru": </span>"API вызов для сбора данных фильма"
+    <span class="token tag">"en": </span>"Send the daily report to the external API every morning.",
+    <span class="token tag">"ja": </span>"毎朝、日次の集計を外部の API へ送る"
   },
   <span class="token tag">"infoType": </span>{
         <span class="token tag">"$ref": </span>"#/components/infoTypes/general"
@@ -1581,12 +2114,11 @@
         <span class="token tag">"$ref": </span>"awsCloudEnvironment.json#/resources/jobServer"
   },
   <span class="token tag">"end": </span>[
-        {<span class="token tag">"$ref": </span>"##/actors/api"}
+        {<span class="token tag">"$ref": </span>"#/actors/api"}
   ],  
   <span class="token tag">"endpointTitle": </span>{
-    <span class="token tag">"en": </span>"LoadBalancer",
-    <span class="token tag">"ja": </span>"ロードバランサ",
-    <span class="token tag">"ru": </span>"Балансировщик нагрузки"
+    <span class="token tag">"en": </span>"External report API",
+    <span class="token tag">"ja": </span>"外部の集計 API"
   },
   <span class="token tag">"storedRatio": </span>{<code>"max":</code> 0.3, <code>"min":</code> 0.1},
   <span class="token tag">"storedInfoType": </span>{
@@ -1600,9 +2132,202 @@
 
 }</code></pre>
 
+          <hr class="hr-dot my-5">
+          <hr class="hr-dot my-5">
+          <h3 id="s-trigger-stateaction" class="font-italic">ステートアクションタイプのトリガーオブジェクト<a class="anchor"
+              href="#s-trigger-stateaction"></a></h3>
+          <p>
+            これはシステムの中で起きるトリガーの一種です。監視しているリソースの状態が条件を満たしたときに始まる処理を表現します（アラームで当番に通知する、予算の超過で止める、セキュリティの検知で隔離する、レプリケーションの失敗に対応するなど）。
+          </p>
+          <h6>固定フィールド</h6>
+          <div class="d-table table-responsive line-break">
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-primary text-white border">フィールド名</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">種類</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">説明</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">type</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. 固定値：
+                '<code>stateAction</code>'.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">description</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                トリガーの説明です。トリガーの目的を端的に示すメモであるべきです。
+                キーは<a href="https://www.iso.org/iso-639-language-codes.html">ISO 639-1</a>の2文字の言語コードでなければなりません。
+                そして値はUTF-8の文字列でなければなりません。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">infoType</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>#/components/infoTypes/&lt;key&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                <a href="#s-infoType">InfoType object</a>への参照です。
+                トリガーが扱う情報の種類を明示します。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">ports</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>integer</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                トリガーのエンドポイントが利用するポート番号です。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">internet</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>boolean</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                トリガーがインターネット経由の通信を行うかどうかを明示します。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">restriction</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>boolean</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                トリガーのエンドポイントが接続元IP、ドメイン、その他の接続制限をかけているかどうかを明示します。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">protocol</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">受け口のプロトコルです（任意）。<a href="#s-trigger-protocol">protocol</a> を参照してください。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">onlineRps</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                このトリガーが発火した時の、1秒当たりの要求数。 開始点（<code>start</code>フィールド）からエンドポイント（<code>end</code>フィールド）に
+                対するリクエストの要求性能を明示します。
+                たとえば、毎週月曜日の朝にバッチシステムが動作し、各バッチが1秒間に2回のスループットで外部APIにアクセスする場合は<code>2.0</code>です。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">reqMonth</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                開始点からエンドポイントへの月間リクエスト数です。
+                たとえば、バッチシステムが毎月1000人に3回メールマガジンを送信する場合、この値は<code>9000</code>になります。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">kbRequest</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                開始点からエンドポイントに対するリクエストあたりのデータサイズをKB単位で明示します。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">kbResponse</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                開始点からエンドポイントへのリクエスト毎に生じるレスポンスのデータサイズをKB単位で明示します。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">condition</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. 処理が始まる状態の条件の説明です。例: エラーが5分間に10件を超えたとき。キーは<a href="https://www.iso.org/iso-639-language-codes.html">ISO 639-1</a>の2文字の言語コードでなければなりません。そして値はUTF-8の文字列でなければなりません。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">start</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>. このトリガーの開始点です。状態の変化を知らせるリソース（アラーム・予算・検知器・バケットなど）の <a href="#s-resource">resource object</a> への参照でなければなりません。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">end</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <a href="#s-ref">Reference object</a> (<code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code> または <code>#/actors/&lt;key&gt;</code>) ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                トリガーのエンドポイントを示します。
+                プロビジョニングファイル参照（<code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code>）または ADL 内部アクター参照（<code>#/actors/&lt;key&gt;</code>）のみ有効です。<b
+                  style="color:red">複数のリソースが指定された場合、startからの通信量は各リソースに均等に分割されるものと判断されます。リソースごとに通信量の比重が異なる場合、また用途や接続ポートなどが異なるリソースへの接続が必要な場合はここに列記すべきではありません。新しいユースケースのendとして記述してください。</b>
+                <b style="color:darkred">⚠️ ADL内部参照のうち、アクター（<code>#/actors/&lt;key&gt;</code>）以外（traffics・useCases等）はスキーマで弾かれます。</b>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">endpointTitle</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                エンドポイントの名称です。キーは<a href="https://www.iso.org/iso-639-language-codes.html">ISO
+                  639-1</a>の2文字の言語コードでなければなりません。
+                そして値はUTF-8の文字列でなければなりません。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">storedRatio</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>必須</strong>.
+                <code>end</code>が受信したデータのうち、<code>end</code>に保管されるデータサイズの比率を示します。
+                例えば、このトリガーでアクターが<code>end</code>に送信するデータの全てを<code>end</code>上で保管する場合、この値は1.0になります。データを
+                保管しない場合は0です。
+                </span>
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">storedInfoType</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>#/components/infoTypes/&lt;key&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">
+                <a href="#s-infoType">InfoType object</a>への参照です。このトリガーの<code>end</code>が保管するデータの種類を示します。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">storageDescription</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">
+                ストレージの説明です。
+                このテキストは外部ツールによる検索インデックスとして使われる可能性があり、ストレージの目的を的確に表現すべきです。
+                キーは<a href="https://www.iso.org/iso-639-language-codes.html">ISO 639-1</a>の2文字の言語コードでなければなりません。
+                そして値はUTF-8の文字列でなければなりません。
+              </p>
+            </div>
+          </div>
+          <h6>JSON Example</h6>
+          <pre><code>{
+  <span class="token tag">"type": "stateAction"</span>,
+  <span class="token tag">"description": </span>{
+    <span class="token tag">"en": </span>"Notify the on-call service when the error alarm fires.",
+    <span class="token tag">"ja": </span>"エラーのアラームが鳴ったら当番のサービスに知らせる"
+  },
+  <span class="token tag">"infoType": </span>{
+        <span class="token tag">"$ref": </span>"#/components/infoTypes/general"
+  },
+  <span class="token tag">"ports": </span>[443],
+  <span class="token tag">"internet": </span>false,
+  <span class="token tag">"restriction": </span>false,
+  <span class="token tag">"onlineRps": </span>{<code>"max":</code> 1, <code>"min":</code> 1},
+  <span class="token tag">"reqMonth": </span>{<code>"max":</code> 30, <code>"min":</code> 1},
+  <span class="token tag">"kbRequest": </span>{<code>"max":</code> 0.01, <code>"min":</code> 0.01},
+  <span class="token tag">"kbResponse": </span>{<code>"max":</code> 1, <code>"min":</code> 1},
+  <span class="token tag">"condition": </span>{
+    <span class="token tag">"en": </span>"When errors exceed 10 in 5 minutes",
+    <span class="token tag">"ja": </span>"エラーが5分間に10件を超えたとき"
+  },
+  <span class="token tag">"start": </span>{
+        <span class="token tag">"$ref": </span>"awsCloudEnvironment.json#/resources/errorAlarm"
+  },
+  <span class="token tag">"end": </span>[
+        {<span class="token tag">"$ref": </span>"#/actors/onCallService"}
+  ],  
+  <span class="token tag">"endpointTitle": </span>{
+    <span class="token tag">"en": </span>"On-call service",
+    <span class="token tag">"ja": </span>"当番のサービス"
+  },
+  <span class="token tag">"storedRatio": </span>{<code>"max":</code> 0.3, <code>"min":</code> 0.1},
+  <span class="token tag">"storedInfoType": </span>{
+    <span class="token tag">"$ref": </span>"#/components/infoTypes/general"
+  },
+  <span class="token tag">"storageDescription": </span>{
+    <span class="token tag">"en": </span>"Logging for API usage tracing.",
+    <span class="token tag">"ja": </span>"API利用状況把握のためのログ保管",
+    <span class="token tag">"ru": </span>"Хранение журнала для статуса использования API"
+  }
 
-
-
+}</code></pre>
 
           <hr class="hr-dot-bold my-7">
           <h3 id="s-traffic">
@@ -2076,19 +2801,23 @@
               <p class="d-table-cell p-2 bg-primary text-white border">有効な $ref 形式</p>
             </div>
             <div class="d-table-row">
-              <p class="d-table-cell p-2 bg-white text-dark border">webAccess <code>trigger.start</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">sessionAccess <code>trigger.start</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>#/actors/&lt;key&gt;</code> のみ（市場・個人のアクター。アクターの型はスキーマでは検査されない）</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">messageAccess・streamAccess <code>trigger.start</code></p>
               <p class="d-table-cell p-2 bg-white text-dark border"><code>#/actors/&lt;key&gt;</code> のみ</p>
             </div>
             <div class="d-table-row">
-              <p class="d-table-cell p-2 bg-white text-dark border">timedAction <code>trigger.start</code></p>
-              <p class="d-table-cell p-2 bg-white text-dark border"><code>#/actors/&lt;key&gt;</code> または <code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">timedAction・stateAction <code>trigger.start</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code> のみ（プロビジョニングのリソース参照）</p>
             </div>
             <div class="d-table-row">
-              <p class="d-table-cell p-2 bg-white text-dark border">webAccess <code>trigger.end[]</code></p>
-              <p class="d-table-cell p-2 bg-white text-dark border"><code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code> のみ（provisioning リソース参照）</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">sessionAccess・messageAccess・streamAccess <code>trigger.end[]</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code> のみ（プロビジョニングのリソース参照）</p>
             </div>
             <div class="d-table-row">
-              <p class="d-table-cell p-2 bg-white text-dark border">timedAction <code>trigger.end[]</code><br><code>traffic.end[]</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">timedAction・stateAction <code>trigger.end[]</code><br><code>traffic.end[]</code></p>
               <p class="d-table-cell p-2 bg-white text-dark border"><code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code> または <code>#/actors/&lt;key&gt;</code></p>
             </div>
             <div class="d-table-row">
@@ -2269,6 +2998,15 @@
                 あわせて、この欄を「著者が決めるバージョン」から「文書を管理するアプリケーションの版管理機構が採番する改訂番号」に定義し直しました。
                 ADL 文書は複数の担い手が保存を重ねて育てるため、改訂の採番は文書を管理するツールが担うほうが実態に合います。
                 著者が意味づけするバージョンを別に持ちたい場合は、<code>info</code> の他のフィールドで表現してください。
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">3.0.0</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">2026-10-19</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">
+                トリガーの型を5つに作り直しました（<code>sessionAccess</code>・<code>messageAccess</code>・<code>streamAccess</code>・<code>timedAction</code>・<code>stateAction</code>）。型は届き方と原因で分け、受け口のプロトコルは新しい欄 <code>protocol</code> に書きます。
+                同じ種類の機器の集まりを表すアクター <code>devices</code> を足しました。<code>timedAction</code> の起点はリソースだけになりました。
+                各型の <code>additionalProperties: false</code> を型の直下に置き直し、定義に無い欄を受け付けないようにしました。2.x の文書とは互換がありません（<a href="#versions">バージョン</a>）。
               </p>
             </div>
           </div>

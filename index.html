@@ -67,7 +67,7 @@
           <div style="padding:8px 8px 0px 8px;font-size:16px;color:white">Architecture Description Language</div>
           <h1 style="padding:0px 10px 0px 10px;">ADL</h1>
           <div style="padding:0px 8px 0px 8px;font-size:12px;color:white">( formerly CDS: Cloud Design Specification )</div>
-          <div style="padding-bottom:30px;padding-top:10px;font-size:20px;color:white">Ver 2.0.0</div>
+          <div style="padding-bottom:30px;padding-top:10px;font-size:20px;color:white">Ver 3.0.0</div>
         </div>
       </div>
     </div>
@@ -250,6 +250,31 @@
             or tooling between 1.0.0 and 1.0.1 for example.
           </p>
 
+                    <h6>3.0.0 and 2.x</h6>
+          <p>
+            3.0.0 rebuilds the trigger types (<a href="#s-trigger">Trigger objects</a>). It is not compatible with 2.x documents.
+            The 2.x trigger types correspond to the 3.0.0 types as follows.
+            <code>webAccess</code> becomes <code>sessionAccess</code> when its start is a market or persons actor, and <code>messageAccess</code> when its start is an external system.
+            A <code>timedAction</code> whose start is an actor becomes <code>messageAccess</code>.
+            In addition to the type names, <code>protocol</code> is REQUIRED for <code>sessionAccess</code>, <code>messageAccess</code> and <code>streamAccess</code>.
+          </p>
+          <div class="d-table table-responsive line-break">
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-primary text-white border">Version</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">Specification</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">Schema</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">3.0.x</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">This document</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="v3/en/reindeer-schema_cds.json">v3/en/reindeer-schema_cds.json</a></p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">2.0.x</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="v2/index.html">v2/index.html</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="en/reindeer-schema_cds.json">en/reindeer-schema_cds.json</a></p>
+            </div>
+          </div>
           <hr class="hr-dot-bold my-7">
           <h3 id="format">Format<a class="anchor" href="#format"></a></h3>
           <p>An ADL document is a JSON document. It MUST be a valid JSON object.</p>
@@ -315,7 +340,7 @@
                 This string MUST be the <a href="#versions">semantic version number</a> of ADL itself.
                 The <code>reindeer</code> field SHOULD be used by tools for interpreting the ADL document.
                 This is not related to the <code>info.version</code> string.
-                <span style="font-weight:bold;color:red">Specify the version of this specification (the latest is 2.0.x).</span>
+                <span style="font-weight:bold;color:red">Specify the version of this specification (the latest is 3.0.x).</span>
               </p>
             </div>
             <div class="d-table-row">
@@ -371,7 +396,7 @@
 
           <h6>JSON example</h6>
           <pre><code>{
-  <span class="token tag">"reindeer": </span>"2.0.0",
+  <span class="token tag">"reindeer": </span>"3.0.0",
   <span class="token tag">"self": </span>"adl.json"
   <span class="token tag">"info": </span>{
     <span class="token tag">"title": </span>{
@@ -756,6 +781,86 @@
 }</code></pre>
 
           <hr class="hr-dot my-5">
+          <h3 id="s-actor-devices" class="font-italic">Devices type of actor object<a class="anchor" href="#s-actor-devices"></a></h3>
+          <p>
+            This object provides information about a group of devices of the same kind, such as sensors, in-vehicle devices or store terminals.
+            An external system (<code>externalSystem</code>) represents one system as one actor and has no count, whereas devices (<code>devices</code>) have a count. Specify the number of devices accurately so that the traffic they generate can be estimated.
+          </p>
+          <h6>Fixed Fields</h6>
+          <div class="d-table table-responsive line-break">
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-primary text-white border">Field Name</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">Type</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">Description</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">type</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. Fixed value,
+                '<code>devices</code>'.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">title</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                The key MUST be 2 letter language code of <a href="https://www.iso.org/iso-639-language-codes.html">ISO
+                  639-1</a>.
+                And the value MUST be string of UTF-8.<br>
+                The title of the group of persons.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">description</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                The key MUST be 2 letter language code of <a href="https://www.iso.org/iso-639-language-codes.html">ISO
+                  639-1</a>.
+                And the value MUST be string of UTF-8. <br>
+                The description of the group of persons.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">num</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>integer</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. The number of devices that make up this actor.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">sourceIdentification</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>boolean</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. Assigned specific IP
+                address range, domains and so on, or not.
+                If true, <code>identificationGroup</code> property is required.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">identificationGroup</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">The group name of IP address range, domains and so
+                on.
+                Required when <code>sourceIdentification</code> propery is true. And MUST NOT use when
+                <code>sourceIdentification</code> propery is false.
+              </p>
+            </div>
+          </div>
+
+          <h6>JSON example</h6>
+          <pre><code>{
+  <span class="token tag">"type": "devices",</span>
+  <span class="token tag">"title": </span>{
+      <span class="token tag">"en": </span>"Delivery vehicles",
+      <span class="token tag">"ja": </span>"配送車両の車載の機器"
+  },
+  <span class="token tag">"description": </span>{
+      <span class="token tag">"en": </span>"GPS units in delivery vehicles that send their position every minute.",
+      <span class="token tag">"ja": </span>"位置を毎分送る配送車両の GPS 機器"
+  },
+  <span class="token tag">"num": </span>1200,
+  <span class="token tag">"sourceIdentification": </span>false
+}</code></pre>
+
+          <hr class="hr-dot my-5">
           <h3 id="s-actor-system" class="font-italic">External system type of actor object<a class="anchor"
               href="#s-actor-system"></a></h3>
           <p>
@@ -971,7 +1076,7 @@
         <span class="token tag">"ru": </span>"Просмотр статического содержимого через Интернет"
   },
   <span class="token tag">"trigger": </span>{
-        <span class="token tag">"type": </span>"webAccess",
+        <span class="token tag">"type": </span>"sessionAccess",
         <span class="token tag">"..."</span>: "..."
   },
   <span class="token tag">"traffics": </span>{
@@ -1258,16 +1363,72 @@
             Trigger objects<a class="anchor" href="#s-trigger"></a>
           </h3>
           <p>
-            The objects provide information about the initial event of the <a href="#s-usecase">use case</a>.
-            It MAY be person's web site access to the server, or it MAY be an automated timed call to the external API.
+            Represents what starts the processing of a <a href="#s-usecase">use case</a>.
+            There are five trigger types. Triggers initiated by an actor (Access types) fall into three types by how they arrive; triggers that occur inside the system (Action types) fall into two types by cause.
+          </p>
+          <div class="d-table table-responsive line-break">
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-primary text-white border">Type</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">Start (<code>start</code>)</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">Load fields</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">Examples</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-trigger-sessionaccess">sessionAccess</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">A market or persons actor</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>dau</code>, <code>pagesVisit</code>, <code>kbPage</code>, <code>reqPage</code>, <code>busyHours</code>, <code>postsVisit</code>, <code>kbPost</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Web and app screens, VDI and RDP, business terminals</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-trigger-messageaccess">messageAccess</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Any actor</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>onlineRps</code>, <code>reqMonth</code>, <code>kbRequest</code>, <code>kbResponse</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">API calls, webhooks, email, SMS, MQTT messages, file transfers over SFTP</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-trigger-streamaccess">streamAccess</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Any actor</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>concurrentConnections</code>, <code>hoursDay</code>, <code>kbpsUp</code>, <code>kbpsDown</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Voice calls, video ingest, WebSocket, games, direct database connections from partners</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-trigger-timedAction">timedAction</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">A scheduler resource</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>onlineRps</code>, <code>reqMonth</code>, <code>kbRequest</code>, <code>kbResponse</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Daily aggregation, scheduled data transfer</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-trigger-stateaction">stateAction</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">A resource that reports state changes (alarms, budgets, detectors, buckets)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>onlineRps</code>, <code>reqMonth</code>, <code>kbRequest</code>, <code>kbResponse</code>, <code>condition</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Notify on-call staff on an alarm, stop on a budget overrun, isolate on a security finding, handle a replication failure</p>
+            </div>
+          </div>
+          <h6>Choosing a type</h6>
+          <ol>
+            <li>If the start is not an actor, use <code>timedAction</code> for processing started at a scheduled time and <code>stateAction</code> for processing started by a state change.</li>
+            <li>If the start is an actor and the connection stays open, use <code>streamAccess</code>.</li>
+            <li>Use <code>sessionAccess</code> when people repeatedly operate screens or terminals, and <code>messageAccess</code> when items are sent one at a time (including calls made by machines).</li>
+            <li>Do not model relays (SQS, SNS, Kafka, DynamoDB Streams, events inside a workflow, functions called during authentication) as triggers. Model them as <a href="#s-traffic">traffics</a> of the use case that starts the processing.</li>
+            <li>Do not make use cases for processing inside a managed service (automated backups, certificate renewal, autoscaling) or for processing that runs only at deployment.</li>
+            <li>If the provisioning files contain no scheduler or resource that reports state changes, do not create a <code>timedAction</code> or <code>stateAction</code> trigger.</li>
+          </ol>
+          <h6 id="s-trigger-protocol">protocol<a class="anchor" href="#s-trigger-protocol"></a></h6>
+          <p>
+            <code>protocol</code> is a string that identifies the protocol of the entry point (where the endpoint of the trigger accepts the communication). It is REQUIRED for <code>sessionAccess</code>, <code>messageAccess</code> and <code>streamAccess</code>, and OPTIONAL for <code>timedAction</code> and <code>stateAction</code>.
+            Values use lowercase letters, digits and the symbols <code>. + -</code>, and start with a lowercase letter or a digit (<code>^[a-z0-9][a-z0-9.+-]*$</code>).
+            Recommended values are <code>https</code>, <code>http3</code>, <code>websocket</code>, <code>grpc</code>, <code>smtp</code>, <code>sms</code>, <code>sip</code>, <code>mqtt</code>, <code>amqp</code>, <code>sftp</code>, <code>rtmp</code>, <code>webrtc</code>, <code>udp</code>, <code>tcp</code>, <code>rdp</code> and <code>ssh</code>. Values not in this list are allowed.
           </p>
 
+
           <hr class="hr-dot my-5">
-          <h3 id="s-trigger-webaccess" class="font-italic">Web access type of trigger object<a class="anchor"
-              href="#s-trigger-webaccess"></a></h3>
-          <p>This is a kind of trigger by actors. Describing the actor's web access to cloud resources. The
-            actor MAY be
-            human, or external computing.
+          <hr class="hr-dot my-5">
+          <span id="s-trigger-webaccess"></span>
+          <h3 id="s-trigger-sessionaccess" class="font-italic">Session access type of trigger object<a class="anchor"
+              href="#s-trigger-sessionaccess"></a></h3>
+          <p>
+            A trigger type initiated by an actor. It represents access in which a market or persons actor interacts repeatedly with screens or terminals (web and app screens, VDI and RDP, business terminals).
+            A 2.x <code>webAccess</code> whose start is a market or persons actor becomes this type.
           </p>
           <h6>Fixed Fields</h6>
           <div class="d-table table-responsive line-break">
@@ -1280,7 +1441,7 @@
               <p class="d-table-cell p-2 bg-white text-dark border">type</p>
               <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
               <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. Fixed value,
-                '<code>webAccess</code>'.
+                '<code>sessionAccess</code>'.
               </p>
             </div>
             <div class="d-table-row">
@@ -1321,6 +1482,12 @@
               <p class="d-table-cell p-2 bg-white text-dark border">[ <code>boolean</code> ]</p>
               <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
                 Source IP, Domain or the other restriction at the end points of this trigger.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">protocol</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. The protocol of the entry point. See <a href="#s-trigger-protocol">protocol</a>.
               </p>
             </div>
             <div class="d-table-row">
@@ -1386,9 +1553,8 @@
             </div>
             <div class="d-table-row">
               <p class="d-table-cell p-2 bg-white text-dark border">start</p>
-              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a></p>
-              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
-                It MUST be a reference to the <a href="#s-actor">actor objects</a>. The start point of this trigger.
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>#/actors/&lt;key&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. The start point of this trigger. MUST be a reference to an <a href="#s-actor">actor object</a> of the market (<code>market</code>) or persons (<code>persons</code>) type. The schema does not check the actor type, so tools that create documents SHOULD check it.
               </p>
             </div>
             <div class="d-table-row">
@@ -1452,11 +1618,11 @@
 
           <h6>JSON Example</h6>
           <pre><code>{
-  <span class="token tag">"type": "webAccess"</span>,
+  <span class="token tag">"type": "sessionAccess"</span>,
+  <span class="token tag">"protocol": </span>"https",
   <span class="token tag">"description": </span>{
-    <span class="token tag">"en": </span>"API call for movie data acquisition.",
-    <span class="token tag">"ja": </span>"動画データ取得のためのAPI呼び出し。",
-    <span class="token tag">"ru": </span>"API вызов для сбора данных фильма"
+    <span class="token tag">"en": </span>"Customers browse and order on the shopping site.",
+    <span class="token tag">"ja": </span>"お客様がショッピングサイトを見て注文する"
   },
   <span class="token tag">"infoType": </span>{
         <span class="token tag">"$ref": </span>"#/components/infoTypes/general"
@@ -1469,7 +1635,7 @@
   <span class="token tag">"kbPage": </span>{<code>"max":</code> 1024, <code>"min":</code> 1024},
   <span class="token tag">"reqPage": </span>{<code>"max":</code> 100, <code>"min":</code> 100},
   <span class="token tag">"busyHours": </span>{<code>"max":</code> 3, <code>"min":</code> 3},
-  <span class="token tag">"postRatio": </span>{<code>"max":</code> 0.1, <code>"min":</code> 0.001},
+  <span class="token tag">"postsVisit": </span>{<code>"max":</code> 0.1, <code>"min":</code> 0.001},
   <span class="token tag">"kbPost": </span>{<code>"max":</code> 100, <code>"min":</code> 100},
   <span class="token tag">"start": </span>{
         <span class="token tag">"$ref": </span>"#/actors/customer"
@@ -1478,9 +1644,8 @@
         {<span class="token tag">"$ref": </span>"awsCloudEnvironment.json#/resources/cloudFront"}
   ],
   <span class="token tag">"endpointTitle": </span>{
-    <span class="token tag">"en": </span>"LoadBalancer",
-    <span class="token tag">"ja": </span>"ロードバランサ",
-    <span class="token tag">"ru": </span>"Балансировщик нагрузки"
+    <span class="token tag">"en": </span>"Shopping site",
+    <span class="token tag">"ja": </span>"ショッピングサイト"
   },
   <span class="token tag">"storedRatio": </span>{<code>"max":</code> 0.3, <code>"min":</code> 0.1},
   <span class="token tag">"storedInfoType": </span>{
@@ -1494,10 +1659,392 @@
 }</code></pre>
 
           <hr class="hr-dot my-5">
+          <hr class="hr-dot my-5">
+          <h3 id="s-trigger-messageaccess" class="font-italic">Message access type of trigger object<a class="anchor"
+              href="#s-trigger-messageaccess"></a></h3>
+          <p>
+            A trigger type initiated by an actor. It represents access in which an actor delivers one item at a time (API calls, webhooks, email, SMS, MQTT messages, SFTP files).
+            The start can be any actor (market, persons, external system or devices). A 2.x <code>webAccess</code> whose start is an external system, and a <code>timedAction</code> whose start is an actor, become this type.
+          </p>
+          <h6>Fixed Fields</h6>
+          <div class="d-table table-responsive line-break">
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-primary text-white border">Field Name</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">Type</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">Description</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">type</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. Fixed value,
+                '<code>messageAccess</code>'.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">description</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                The key MUST be 2 letter language code of <a href="https://www.iso.org/iso-639-language-codes.html">ISO
+                  639-1</a>.
+                And the value MUST be string of UTF-8. <br>
+                The description of the trigger.
+                It SHOULD be the concise memo describing the purpose of this trigger.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">infoType</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>#/components/infoTypes/&lt;key&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Reference to the <a href="#s-infoType">InfoType object</a>.
+                Indicates the type of information handled in this trigger.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">ports</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>integer</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Port numbers required at the end points of this trigger.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">internet</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>boolean</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Use internet or not for this connection.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">restriction</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>boolean</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Source IP, Domain or the other restriction at the end points of this trigger.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">protocol</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. The protocol of the entry point. See <a href="#s-trigger-protocol">protocol</a>.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">onlineRps</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Number of requests per second when this trigger fires.
+                Specify the required performance from the start point (<code>start</code> field) to the end point
+                (<code>end</code> field).
+                For example, if the batch system runs every Monday morning and each batch accesses the external API
+                with a throughput of 2 times per second it is <code>2.0</code>.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">reqMonth</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Monthly request numbers from the start point to the endpoints.
+                For example, it's <code>9000</code> in case of that the batch system sends mail magazine 3 times to 1000
+                persons per month.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">kbRequest</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Request data size per request from the start point to the end point as the unit of KB.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">kbResponse</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Response data size per request from the start point to the end point as the unit of KB.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">start</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>#/actors/&lt;key&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. The start point of this trigger. MUST be a reference to an <a href="#s-actor">actor object</a>.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">end</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <a href="#s-ref">Reference object</a> (<code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code>) ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. The endpoint of this trigger. MUST be a reference to a resource listed in a <a href="#s-resource">resource object</a>. Only provisioning file references (<code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code>) are valid.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">endpointTitle</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                The key MUST be 2 letter language code of <a href="https://www.iso.org/iso-639-language-codes.html">ISO
+                  639-1</a>.
+                And the value MUST be string of UTF-8. <br>
+                The name of the endpoint.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">storedRatio</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                The ratio of the stored data volume among the received data to the ends. For example,
+                it is <code>1.0</code> in case of that the database resource in this trigger is received 10GB/Month from
+                the app server and store all of them to the database.
+                When the ends don't store the traffic data, it's 0.
+                </span>
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">storedInfoType</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">
+                Reference to the <a href="#s-infoType">InfoType object</a>.
+                Indicates the type of information stored at the ends of this trigger.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">storageDescription</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">
+                The key MUST be 2 letter language code of <a href="https://www.iso.org/iso-639-language-codes.html">ISO
+                  639-1</a>.
+                And the value MUST be string of UTF-8. <br>
+                The description of the endpoint.
+                It SHOULD be the concise memo describing the purpose of storage of the ends in this trigger.
+              </p>
+            </div>
+          </div>
+          <h6>JSON Example</h6>
+          <pre><code>{
+  <span class="token tag">"type": "messageAccess"</span>,
+  <span class="token tag">"protocol": </span>"https",
+  <span class="token tag">"description": </span>{
+    <span class="token tag">"en": </span>"The partner system sends order data through the API.",
+    <span class="token tag">"ja": </span>"取引先のシステムが API で注文データを送る"
+  },
+  <span class="token tag">"infoType": </span>{
+        <span class="token tag">"$ref": </span>"#/components/infoTypes/general"
+  },
+  <span class="token tag">"ports": </span>[443],
+  <span class="token tag">"internet": </span>false,
+  <span class="token tag">"restriction": </span>false,
+  <span class="token tag">"onlineRps": </span>{<code>"max":</code> 3, <code>"min":</code> 1},
+  <span class="token tag">"reqMonth": </span>{<code>"max":</code> 9000, <code>"min":</code> 5000},
+  <span class="token tag">"kbRequest": </span>{<code>"max":</code> 0.01, <code>"min":</code> 0.01},
+  <span class="token tag">"kbResponse": </span>{<code>"max":</code> 1, <code>"min":</code> 1},
+  <span class="token tag">"start": </span>{
+        <span class="token tag">"$ref": </span>"#/actors/partnerSystem"
+  },
+  <span class="token tag">"end": </span>[
+        {<span class="token tag">"$ref": </span>"awsCloudEnvironment.json#/resources/apiGateway"}
+  ],  
+  <span class="token tag">"endpointTitle": </span>{
+    <span class="token tag">"en": </span>"Order API",
+    <span class="token tag">"ja": </span>"注文 API"
+  },
+  <span class="token tag">"storedRatio": </span>{<code>"max":</code> 0.3, <code>"min":</code> 0.1},
+  <span class="token tag">"storedInfoType": </span>{
+    <span class="token tag">"$ref": </span>"#/components/infoTypes/general"
+  },
+  <span class="token tag">"storageDescription": </span>{
+    <span class="token tag">"en": </span>"Logging for API usage tracing.",
+    <span class="token tag">"ja": </span>"API利用状況把握のためのログ保管",
+    <span class="token tag">"ru": </span>"Хранение журнала для статуса использования API"
+  }
+
+}</code></pre>
+
+          <hr class="hr-dot my-5">
+          <hr class="hr-dot my-5">
+          <h3 id="s-trigger-streamaccess" class="font-italic">Stream access type of trigger object<a class="anchor"
+              href="#s-trigger-streamaccess"></a></h3>
+          <p>
+            A trigger type initiated by an actor. It represents access in which an actor keeps a connection open (voice calls, video ingest, WebSocket, games, direct database connections from partners).
+            The load is expressed by the number of connections kept open at the same time and their bandwidth, not by the number of requests.
+          </p>
+          <h6>Fixed Fields</h6>
+          <div class="d-table table-responsive line-break">
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-primary text-white border">Field Name</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">Type</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">Description</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">type</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. Fixed value,
+                '<code>streamAccess</code>'.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">description</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                The key MUST be 2 letter language code of <a href="https://www.iso.org/iso-639-language-codes.html">ISO
+                  639-1</a>.
+                And the value MUST be string of UTF-8. <br>
+                The description of the trigger.
+                It SHOULD be the concise memo describing the purpose of this trigger.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">infoType</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>#/components/infoTypes/&lt;key&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Reference to the <a href="#s-infoType">InfoType object</a>.
+                Indicates the type of information handled in this trigger.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">ports</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>integer</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Port numbers required at the end points of this trigger.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">internet</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>boolean</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Use internet or not for this connection.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">restriction</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>boolean</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Source IP, Domain or the other restriction at the end points of this trigger.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">protocol</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. The protocol of the entry point. See <a href="#s-trigger-protocol">protocol</a>.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">concurrentConnections</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. The number of connections kept open at the same time.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">hoursDay</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. The hours per day that one connection stays open.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">kbpsUp</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. The average uplink bandwidth of one connection (from the actor to the <code>end</code>), in kbps.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">kbpsDown</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. The average downlink bandwidth of one connection (from the <code>end</code> to the actor), in kbps.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">start</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>#/actors/&lt;key&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. The start point of this trigger. MUST be a reference to an <a href="#s-actor">actor object</a>.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">end</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <a href="#s-ref">Reference object</a> (<code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code>) ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. The endpoint of this trigger. MUST be a reference to a resource listed in a <a href="#s-resource">resource object</a>. Only provisioning file references (<code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code>) are valid.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">endpointTitle</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                The key MUST be 2 letter language code of <a href="https://www.iso.org/iso-639-language-codes.html">ISO
+                  639-1</a>.
+                And the value MUST be string of UTF-8. <br>
+                The name of the endpoint.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">storedRatio</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                The ratio of the stored data volume among the received data to the ends. For example,
+                it is <code>1.0</code> in case of that the database resource in this trigger is received 10GB/Month from
+                the app server and store all of them to the database.
+                When the ends don't store the traffic data, it's 0.
+                </span>
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">storedInfoType</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">
+                Reference to the <a href="#s-infoType">InfoType object</a>.
+                Indicates the type of information stored at the ends of this trigger.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">storageDescription</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">
+                The key MUST be 2 letter language code of <a href="https://www.iso.org/iso-639-language-codes.html">ISO
+                  639-1</a>.
+                And the value MUST be string of UTF-8. <br>
+                The description of the endpoint.
+                It SHOULD be the concise memo describing the purpose of storage of the ends in this trigger.
+              </p>
+            </div>
+          </div>
+          <h6>JSON Example</h6>
+          <pre><code>{
+  <span class="token tag">"type": "streamAccess"</span>,
+  <span class="token tag">"protocol": </span>"websocket",
+  <span class="token tag">"description": </span>{
+    <span class="token tag">"en": </span>"Players stay connected to the game server over WebSocket.",
+    <span class="token tag">"ja": </span>"プレイヤーが WebSocket でゲームのサーバにつないだままにする"
+  },
+  <span class="token tag">"infoType": </span>{
+        <span class="token tag">"$ref": </span>"#/components/infoTypes/general"
+  },
+  <span class="token tag">"ports": </span>[443],
+  <span class="token tag">"internet": </span>true,
+  <span class="token tag">"restriction": </span>false,
+  <span class="token tag">"concurrentConnections": </span>{<code>"max":</code> 2000, <code>"min":</code> 200},
+  <span class="token tag">"hoursDay": </span>{<code>"max":</code> 8, <code>"min":</code> 2},
+  <span class="token tag">"kbpsUp": </span>{<code>"max":</code> 16, <code>"min":</code> 4},
+  <span class="token tag">"kbpsDown": </span>{<code>"max":</code> 64, <code>"min":</code> 16},
+  <span class="token tag">"start": </span>{
+        <span class="token tag">"$ref": </span>"#/actors/players"
+  },
+  <span class="token tag">"end": </span>[
+        {<span class="token tag">"$ref": </span>"awsCloudEnvironment.json#/resources/websocketApi"}
+  ],  
+  <span class="token tag">"endpointTitle": </span>{
+    <span class="token tag">"en": </span>"Game server",
+    <span class="token tag">"ja": </span>"ゲームのサーバ"
+  },
+  <span class="token tag">"storedRatio": </span>{<code>"max":</code> 0.3, <code>"min":</code> 0.1},
+  <span class="token tag">"storedInfoType": </span>{
+    <span class="token tag">"$ref": </span>"#/components/infoTypes/general"
+  },
+  <span class="token tag">"storageDescription": </span>{
+    <span class="token tag">"en": </span>"Logging for API usage tracing.",
+    <span class="token tag">"ja": </span>"API利用状況把握のためのログ保管",
+    <span class="token tag">"ru": </span>"Хранение журнала для статуса использования API"
+  }
+
+}</code></pre>
+
+          <hr class="hr-dot my-5">
+          <hr class="hr-dot my-5">
           <h3 id="s-trigger-timedAction" class="font-italic">Timed action type of trigger object<a class="anchor"
-              href="#s-trigger-webaccess"></a></h3>
-          <p>This is a kind of trigger by actors or resources. Describing the timed action from actors or cloud
-            computing resources to other ones.
+              href="#s-trigger-timedAction"></a></h3>
+          <p>
+            A trigger type that occurs inside the system. It represents processing that a scheduler resource starts at set times (daily aggregation, scheduled data transfer).
+            In 3.0.0, the start MUST be a resource. Model processing started by an actor as <a href="#s-trigger-messageaccess">messageAccess</a>.
           </p>
           <h6>Fixed Fields</h6>
           <div class="d-table table-responsive line-break">
@@ -1554,6 +2101,12 @@
               </p>
             </div>
             <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">protocol</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">The protocol of the entry point (optional). See <a href="#s-trigger-protocol">protocol</a>.
+              </p>
+            </div>
+            <div class="d-table-row">
               <p class="d-table-cell p-2 bg-white text-dark border">onlineRps</p>
               <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
               <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
@@ -1589,10 +2142,8 @@
             </div>
             <div class="d-table-row">
               <p class="d-table-cell p-2 bg-white text-dark border">start</p>
-              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a></p>
-              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
-                It MUST be a reference to the <a href="#s-actor">actor object</a> or the <a href="#s-resource">resource
-                  object</a>. The start point of this trigger.
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. The start point of this trigger. MUST be a reference to the <a href="#s-resource">resource object</a> of a scheduler that starts processing at set times.
               </p>
             </div>
             <div class="d-table-row">
@@ -1650,9 +2201,8 @@
           <pre><code>{
   <span class="token tag">"type": "timedAction"</span>,
   <span class="token tag">"description": </span>{
-    <span class="token tag">"en": </span>"API call for movie data acquisition.",
-    <span class="token tag">"ja": </span>"動画データ取得のためのAPI呼び出し。",
-    <span class="token tag">"ru": </span>"API вызов для сбора данных фильма"
+    <span class="token tag">"en": </span>"Send the daily report to the external API every morning.",
+    <span class="token tag">"ja": </span>"毎朝、日次の集計を外部の API へ送る"
   },
   <span class="token tag">"infoType": </span>{
         <span class="token tag">"$ref": </span>"#/components/infoTypes/general"
@@ -1668,12 +2218,11 @@
         <span class="token tag">"$ref": </span>"awsCloudEnvironment.json#/resources/jobServer"
   },
   <span class="token tag">"end": </span>[
-        {<span class="token tag">"$ref": </span>"##/actors/api"}
+        {<span class="token tag">"$ref": </span>"#/actors/api"}
   ],  
   <span class="token tag">"endpointTitle": </span>{
-    <span class="token tag">"en": </span>"LoadBalancer",
-    <span class="token tag">"ja": </span>"ロードバランサ",
-    <span class="token tag">"ru": </span>"Балансировщик нагрузки"
+    <span class="token tag">"en": </span>"External report API",
+    <span class="token tag">"ja": </span>"外部の集計 API"
   },
   <span class="token tag">"storedRatio": </span>{<code>"max":</code> 0.3, <code>"min":</code> 0.1},
   <span class="token tag">"storedInfoType": </span>{
@@ -1687,6 +2236,212 @@
 
 }</code></pre>
 
+          <hr class="hr-dot my-5">
+          <hr class="hr-dot my-5">
+          <h3 id="s-trigger-stateaction" class="font-italic">State action type of trigger object<a class="anchor"
+              href="#s-trigger-stateaction"></a></h3>
+          <p>
+            A trigger type that occurs inside the system. It represents processing that starts when the state of a monitored resource meets a condition (notifying on-call staff on an alarm, stopping on a budget overrun, isolating on a security finding, handling a replication failure).
+          </p>
+          <h6>Fixed Fields</h6>
+          <div class="d-table table-responsive line-break">
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-primary text-white border">Field Name</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">Type</p>
+              <p class="d-table-cell p-2 bg-primary text-white border">Description</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">type</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. Fixed value,
+                '<code>stateAction</code>'.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">description</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                The key MUST be 2 letter language code of <a href="https://www.iso.org/iso-639-language-codes.html">ISO
+                  639-1</a>.
+                And the value MUST be string of UTF-8. <br>
+                The description of the trigger.
+                It SHOULD be the concise memo describing the purpose of this trigger.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">infoType</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>#/components/infoTypes/&lt;key&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Reference to the <a href="#s-infoType">InfoType object</a>.
+                Indicates the type of information handled in this trigger.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">ports</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>integer</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Port numbers required at the end points of this trigger.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">internet</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>boolean</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Use internet or not for this connection.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">restriction</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <code>boolean</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Source IP, Domain or the other restriction at the end points of this trigger.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">protocol</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>string</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">The protocol of the entry point (optional). See <a href="#s-trigger-protocol">protocol</a>.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">onlineRps</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Number of requests per second when this trigger fires.
+                Specify the required performance from the start point (<code>start</code> field) to the end point
+                (<code>end</code> field).
+                For example, if the batch system runs every Monday morning and each batch accesses the external API
+                with a throughput of 2 times per second it is <code>2.0</code>.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">reqMonth</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Monthly request numbers from the start point to the endpoints.
+                For example, it's <code>9000</code> in case of that the batch system sends mail magazine 3 times to 1000
+                persons per month.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">kbRequest</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Request data size per request from the start point to the end point as the unit of KB.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">kbResponse</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                Response data size per request from the start point to the end point as the unit of KB.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">condition</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. A description of the state condition that starts the processing, e.g. "more than 10 errors in 5 minutes". Keys MUST be <a href="https://www.iso.org/iso-639-language-codes.html">ISO 639-1</a> two-letter language codes, and values MUST be UTF-8 strings.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">start</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a> (<code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code>)</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>. The start point of this trigger. MUST be a reference to a <a href="#s-resource">resource object</a> that reports state changes (alarms, budgets, detectors, buckets).
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">end</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">[ <a href="#s-ref">Reference object</a> (<code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code> or <code>#/actors/&lt;key&gt;</code>) ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                It MUST be a reference to the <a href="#s-actor">actor object</a> (<code>#/actors/&lt;key&gt;</code>) or a provisioning file resource (<code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code>). The end point of this trigger.<b style="color:red">If multiple resources are specified,
+                  the traffic from start is determined to be evenly divided into each resource. Connections to resources
+                  with different traffic weights or different uses, connection ports, etc. should not be listed here.
+                  Write it as the end of the new use case.</b>
+                <b style="color:darkred">⚠️ Any ADL-internal reference other than <code>#/actors/&lt;key&gt;</code> (e.g. traffics, useCases) is rejected by the schema.</b>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">endpointTitle</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                The key MUST be 2 letter language code of <a href="https://www.iso.org/iso-639-language-codes.html">ISO
+                  639-1</a>.
+                And the value MUST be string of UTF-8. <br>
+                The name of the endpoint.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">storedRatio</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-rangeValue">Range values object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><strong>REQUIRED</strong>.
+                The ratio of the stored data volume among the received data to the ends. For example,
+                it is <code>1.0</code> in case of that the database resource in this trigger is received 10GB/Month from
+                the app server and store all of them to the database.
+                When the ends don't store the traffic data, it's 0.
+                </span>
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">storedInfoType</p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><a href="#s-ref">Reference object</a></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">
+                Reference to the <a href="#s-infoType">InfoType object</a>.
+                Indicates the type of information stored at the ends of this trigger.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">storageDescription</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">Map[ <code>string</code>, <code>string</code> ]</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">
+                The key MUST be 2 letter language code of <a href="https://www.iso.org/iso-639-language-codes.html">ISO
+                  639-1</a>.
+                And the value MUST be string of UTF-8. <br>
+                The description of the endpoint.
+                It SHOULD be the concise memo describing the purpose of storage of the ends in this trigger.
+              </p>
+            </div>
+          </div>
+          <h6>JSON Example</h6>
+          <pre><code>{
+  <span class="token tag">"type": "stateAction"</span>,
+  <span class="token tag">"description": </span>{
+    <span class="token tag">"en": </span>"Notify the on-call service when the error alarm fires.",
+    <span class="token tag">"ja": </span>"エラーのアラームが鳴ったら当番のサービスに知らせる"
+  },
+  <span class="token tag">"infoType": </span>{
+        <span class="token tag">"$ref": </span>"#/components/infoTypes/general"
+  },
+  <span class="token tag">"ports": </span>[443],
+  <span class="token tag">"internet": </span>false,
+  <span class="token tag">"restriction": </span>false,
+  <span class="token tag">"onlineRps": </span>{<code>"max":</code> 1, <code>"min":</code> 1},
+  <span class="token tag">"reqMonth": </span>{<code>"max":</code> 30, <code>"min":</code> 1},
+  <span class="token tag">"kbRequest": </span>{<code>"max":</code> 0.01, <code>"min":</code> 0.01},
+  <span class="token tag">"kbResponse": </span>{<code>"max":</code> 1, <code>"min":</code> 1},
+  <span class="token tag">"condition": </span>{
+    <span class="token tag">"en": </span>"When errors exceed 10 in 5 minutes",
+    <span class="token tag">"ja": </span>"エラーが5分間に10件を超えたとき"
+  },
+  <span class="token tag">"start": </span>{
+        <span class="token tag">"$ref": </span>"awsCloudEnvironment.json#/resources/errorAlarm"
+  },
+  <span class="token tag">"end": </span>[
+        {<span class="token tag">"$ref": </span>"#/actors/onCallService"}
+  ],  
+  <span class="token tag">"endpointTitle": </span>{
+    <span class="token tag">"en": </span>"On-call service",
+    <span class="token tag">"ja": </span>"当番のサービス"
+  },
+  <span class="token tag">"storedRatio": </span>{<code>"max":</code> 0.3, <code>"min":</code> 0.1},
+  <span class="token tag">"storedInfoType": </span>{
+    <span class="token tag">"$ref": </span>"#/components/infoTypes/general"
+  },
+  <span class="token tag">"storageDescription": </span>{
+    <span class="token tag">"en": </span>"Logging for API usage tracing.",
+    <span class="token tag">"ja": </span>"API利用状況把握のためのログ保管",
+    <span class="token tag">"ru": </span>"Хранение журнала для статуса использования API"
+  }
+
+}</code></pre>
 
           <hr class="hr-dot-bold my-7">
           <h3 id="s-traffic">
@@ -2180,19 +2935,23 @@
               <p class="d-table-cell p-2 bg-primary text-white border">Valid $ref format</p>
             </div>
             <div class="d-table-row">
-              <p class="d-table-cell p-2 bg-white text-dark border">webAccess <code>trigger.start</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">sessionAccess <code>trigger.start</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>#/actors/&lt;key&gt;</code> only (a market or persons actor; the schema does not check the actor type)</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">messageAccess, streamAccess <code>trigger.start</code></p>
               <p class="d-table-cell p-2 bg-white text-dark border"><code>#/actors/&lt;key&gt;</code> only</p>
             </div>
             <div class="d-table-row">
-              <p class="d-table-cell p-2 bg-white text-dark border">timedAction <code>trigger.start</code></p>
-              <p class="d-table-cell p-2 bg-white text-dark border"><code>#/actors/&lt;key&gt;</code> or <code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code></p>
-            </div>
-            <div class="d-table-row">
-              <p class="d-table-cell p-2 bg-white text-dark border">webAccess <code>trigger.end[]</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">timedAction, stateAction <code>trigger.start</code></p>
               <p class="d-table-cell p-2 bg-white text-dark border"><code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code> only (provisioning resource reference)</p>
             </div>
             <div class="d-table-row">
-              <p class="d-table-cell p-2 bg-white text-dark border">timedAction <code>trigger.end[]</code><br><code>traffic.end[]</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border">sessionAccess, messageAccess, streamAccess <code>trigger.end[]</code></p>
+              <p class="d-table-cell p-2 bg-white text-dark border"><code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code> only (provisioning resource reference)</p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">timedAction, stateAction <code>trigger.end[]</code><br><code>traffic.end[]</code></p>
               <p class="d-table-cell p-2 bg-white text-dark border"><code>&lt;file&gt;#/&lt;section&gt;/&lt;RealKey&gt;</code> or <code>#/actors/&lt;key&gt;</code></p>
             </div>
             <div class="d-table-row">
@@ -2381,6 +3140,15 @@
                 An ADL document is grown by repeated saves, often by more than one hand, so numbering the revisions
                 belongs to the tool that manages the document. If you want a version that carries authorial meaning,
                 express it in another field of <code>info</code>.
+              </p>
+            </div>
+            <div class="d-table-row">
+              <p class="d-table-cell p-2 bg-white text-dark border">3.0.0</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">2026-10-19</p>
+              <p class="d-table-cell p-2 bg-white text-dark border">
+                Rebuilt the trigger types into five (<code>sessionAccess</code>, <code>messageAccess</code>, <code>streamAccess</code>, <code>timedAction</code>, <code>stateAction</code>). Access types are distinguished by how they arrive and Action types by cause, and the protocol of the entry point goes in the new <code>protocol</code> field.
+                Added the <code>devices</code> actor for groups of devices. The start of <code>timedAction</code> can now only be a resource.
+                Moved each type's <code>additionalProperties: false</code> to the type level so that undefined fields are rejected. Not compatible with 2.x documents (<a href="#versions">Versions</a>).
               </p>
             </div>
           </div>

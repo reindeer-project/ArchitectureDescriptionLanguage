@@ -1,0 +1,1890 @@
+{
+  "validate": true,
+  "schemas": [
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/core-schema.json",
+      "fileMatch": [
+        "https://reindeer.tech/adl-schema/default.json"
+      ],
+      "schema": {
+        "title": "ADL Object",
+        "description": "This is the root object of the ADL. https://docs.reindeer.tech/index.html#s-clouddesign",
+        "type": "object",
+        "required": [
+          "reindeer",
+          "self",
+          "info",
+          "actors",
+          "resources",
+          "useCases"
+        ],
+        "properties": {
+          "reindeer": {
+            "title": "Version number",
+            "description": "REQUIRED. This string MUST be the semantic version number of the ADL version. The reindeer field SHOULD be used by tools for interpreting the ADL document. This is not related to the info.version string. https://docs.reindeer.tech/index.html#s-clouddesign",
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+          },
+          "self": {
+            "title": "File name",
+            "description": "REQUIRED. This string is the filename of the ADL. It MUST be with the extension, .json, .yaml, or .yml. The self field SHOULD be used by tools for interpreting the ADL. https://docs.reindeer.tech/index.html#s-clouddesign",
+            "type": "string",
+            "default": "adl.json",
+            "pattern": "^[a-zA-Z0-9_.\\-]+\\.(yaml|yml|json)$"
+          },
+          "info": {
+            "title": "Info",
+            "description": "REQUIRED. Provides metadata about the cloud computing adoption. The metadata MAY be used by tooling as required. https://docs.reindeer.tech/index.html#s-info",
+            "$ref": "https://reindeer.tech/adl-schema/v3/info.json"
+          },
+          "actors": {
+            "title": "Actors",
+            "description": "REQUIRED. An array of actor objects, which provide information about the external user or system to which cloud computing is connected. https://docs.reindeer.tech/index.html#s-actor",
+            "type": "object",
+            "patternProperties": {
+              "^[0-9a-zA-Z]+$": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "$ref": "https://reindeer.tech/adl-schema/v3/marketTypeOfActor.json"
+                  },
+                  {
+                    "type": "object",
+                    "$ref": "https://reindeer.tech/adl-schema/v3/personsTypeOfActor.json"
+                  },
+                  {
+                    "type": "object",
+                    "$ref": "https://reindeer.tech/adl-schema/v3/externalSystemTypeOfActor.json"
+                  },
+                  {
+                    "type": "object",
+                    "$ref": "https://reindeer.tech/adl-schema/v3/devicesTypeOfActor.json"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "resources": {
+            "title": "Resources",
+            "description": "REQUIRED. An array of resource objects, which is pointing to the external documents (files written by cloud automation languages) describing the cloud computing architecture. https://docs.reindeer.tech/index.html#s-resource",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "$ref": "https://reindeer.tech/adl-schema/v3/resource.json"
+            },
+            "additionalProperties": false
+          },
+          "useCases": {
+            "title": "Use Cases",
+            "description": "REQUIRED. An array of use case objects, which provide information about the relationship for achieving a specific purpose between actors and cloud computing resources. https://docs.reindeer.tech/index.html#s-usecase",
+            "type": "object",
+            "patternProperties": {
+              "^[0-9a-zA-Z]+$": {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/usecase.json"
+              }
+            },
+            "additionalProperties": false
+          },
+          "components": {
+            "title": "Component objects",
+            "description": "Holds a set of reusable objects for different aspects of the ADL. All objects defined within the components object will have no effect on the ADL document unless they are explicitly referenced from properties outside the components object. https://docs.reindeer.tech/index.html#s-components",
+            "type": "object",
+            "properties": {
+              "infoTypes": {
+                "title": "Information type objects",
+                "description": "An object to hold reusable Information type object. https://docs.reindeer.tech/index.html#s-infoType",
+                "type": "object",
+                "patternProperties": {
+                  "^[0-9a-zA-Z]+$": {
+                    "type": "object",
+                    "$ref": "https://reindeer.tech/adl-schema/v3/infoType.json"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/info.json",
+      "schema": {
+        "title": "Info object",
+        "description": "The object provides metadata about the ADL. The metadata SHOULD be filled properly for helping others easy to search and find the ADL. https://docs.reindeer.tech/index.html#s-info",
+        "type": "object",
+        "required": [
+          "version",
+          "license",
+          "title",
+          "description",
+          "status",
+          "designedAt",
+          "authors"
+        ],
+        "properties": {
+          "version": {
+            "title": "ADL document revision number",
+            "description": "REQUIRED. The revision number of this ADL document. An integer starting at 1, assigned by the version-management mechanism of the application that manages the document (incremented by 1 on each save). It is not a field the author sets by hand. This is distinct from the version of the ADL specification itself (the reindeer field). https://docs.reindeer.tech/index.html#s-info",
+            "default": 1,
+            "type": "integer",
+            "minimum": 1
+          },
+          "license": {
+            "title": "License of this ADL",
+            "description": "REQUIRED. The license information of the ADL. https://docs.reindeer.tech/index.html#s-license",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/license.json"
+          },
+          "title": {
+            "title": "Title of the service",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 70 letters string of UTF-8. The title of the service, adopting this cloud design. https://docs.reindeer.tech/index.html#s-info",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "description": {
+            "title": "Description of the service",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. The description of the service, adopting this cloud design. It SHOULD be the concise memo including every keyword of the purpose and functions of the system. This text MAY be used as the search index by external tools. https://docs.reindeer.tech/index.html#s-info",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "status": {
+            "title": "The status of the ADL",
+            "description": "REQUIRED. The status of the ADL. Valid values are draft, requirement-defined, design-completed and design-reviewd.\ndraft: Requirement unregistered or under definition.\nprepared: State where requirements are defined.\ndesigned: Design codes created based on requirements.\nreviewed: Completed design review and modification.\n https://docs.reindeer.tech/index.html#s-info",
+            "type": "string",
+            "enum": [
+              "draft",
+              "prepared",
+              "designed",
+              "reviewed"
+            ]
+          },
+          "designedAt": {
+            "title": "Designed time",
+            "description": "REQUIRED. The time when the ADL was designed at. It MUST be the UNIXTIME format. https://docs.reindeer.tech/index.html#s-info",
+            "type": "integer",
+            "minimum": 1
+          },
+          "authors": {
+            "title": "Authors",
+            "description": "REQUIRED. The authors of the ADL. This information MAY be used by external tools as the important evidence of involved person's skill and experience. https://docs.reindeer.tech/index.html#s-author",
+            "type": "object",
+            "patternProperties": {
+              "^[0-9a-zA-Z]+$": {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/author.json"
+              }
+            },
+            "additionalProperties": false
+          },
+          "organizations": {
+            "title": "Organizations",
+            "description": "Related organizations of the ADL. This information MAY be used by external tools as the important evidence of involved organization's skill and experience. https://docs.reindeer.tech/index.html#s-organization",
+            "type": "object",
+            "patternProperties": {
+              "^[0-9a-zA-Z]+$": {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/organization.json"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/marketTypeOfActor.json",
+      "schema": {
+        "title": "Market type of actor object",
+        "description": "This object provides information about an unspecified number of users, such as consumers and spectators belonging to a particular market. It is the kind of actor you SHOULD use, for example, when designing a limited network connection with an identifiable individual and cloud computing. The correct number SHOULD be provided in order to understand the number of users and the number of requests to be provided to the system. https://docs.reindeer.tech/index.html#s-actor-market",
+        "type": "object",
+        "required": [
+          "type",
+          "title",
+          "description",
+          "market",
+          "marketShare",
+          "sourceIdentification"
+        ],
+        "properties": {
+          "type": {
+            "title": "Type of actor",
+            "description": "REQUIRED. Fixed value, 'market'. https://docs.reindeer.tech/index.html#s-actor-market",
+            "type": "string",
+            "enum": [
+              "market"
+            ]
+          },
+          "title": {
+            "title": "The title of the actor",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 70 letters string of UTF-8. The title of the actor. https://docs.reindeer.tech/index.html#s-actor-market",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "description": {
+            "title": "The description of the actor",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. The description of the actor. https://docs.reindeer.tech/index.html#s-actor-market",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "market": {
+            "title": "Market object",
+            "description": "REQUIRED. Market information to which this actor belongs. https://docs.reindeer.tech/index.html#s-market",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/market.json"
+          },
+          "marketShare": {
+            "title": "Market share",
+            "description": "REQUIRED. The share ratio of this actor among the belonging market. For example, 0.3 means 30%. https://docs.reindeer.tech/index.html#s-actor-market",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "sourceIdentification": {
+            "title": "IP, Domain or the other identification",
+            "description": "REQUIRED. Whether specific IP address range or domains is assigned or not. If true, identificationGroup property is required. https://docs.reindeer.tech/index.html#s-actor-market",
+            "type": "boolean"
+          },
+          "identificationGroup": {
+            "title": "The group name of IP address range, domains and so on.",
+            "description": "The group name of IP address range, domains and so on.. Required when sourceIdentification propery is true. And MUST NOT use when sourceIdentification propery is false. https://docs.reindeer.tech/index.html#s-actor-market",
+            "type": "string",
+            "$ref": "https://reindeer.tech/adl-schema/v3/ip.json"
+          },
+          "_meta": {
+            "title": "Provenance metadata",
+            "description": "OPTIONAL. Authorship and confidence metadata. Absent implies AI-defined with full confidence.",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          }
+        },
+        "dependencies": {
+          "identificationGroup": {
+            "properties": {
+              "sourceIdentification": {
+                "enum": [
+                  true
+                ]
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/personsTypeOfActor.json",
+      "schema": {
+        "title": "Persons type of actor object",
+        "description": "The object provides information about a type of actor being consisted of one or a few persons like system operator. The kind of actor you SHOULD use, for example, when designing a limited network connection between an identifiable external system and cloud computing. https://docs.reindeer.tech/index.html#s-actor-persons",
+        "type": "object",
+        "required": [
+          "type",
+          "title",
+          "description",
+          "num",
+          "sourceIdentification"
+        ],
+        "properties": {
+          "type": {
+            "title": "Type of actor",
+            "description": "REQUIRED. Fixed value, 'persons'. https://docs.reindeer.tech/index.html#s-actor-persons",
+            "type": "string",
+            "enum": [
+              "persons"
+            ]
+          },
+          "title": {
+            "title": "The title of the group of persons",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 70 letters string of UTF-8. https://docs.reindeer.tech/index.html#s-actor-persons",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "description": {
+            "title": "The description of the actor",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. https://docs.reindeer.tech/index.html#s-actor-persons",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "num": {
+            "title": "The number of members",
+            "description": "REQUIRED. The number of members. https://docs.reindeer.tech/index.html#s-actor-persons",
+            "type": "integer",
+            "minimum": 1
+          },
+          "sourceIdentification": {
+            "title": "IP, Domain or the other identification",
+            "description": "REQUIRED. Whether specific IP address range or domains is assigned or not. If true, identificationGroup property is required. https://docs.reindeer.tech/index.html#s-actor-persons",
+            "type": "boolean"
+          },
+          "identificationGroup": {
+            "title": "The group name of IP address range, domains and so on.",
+            "description": "The group name of IP address range, domains and so on. Required when sourceIdentification propery is true. And MUST NOT use when sourceIdentification propery is false. https://docs.reindeer.tech/index.html#s-actor-persons",
+            "type": "string",
+            "$ref": "https://reindeer.tech/adl-schema/v3/ip.json"
+          },
+          "_meta": {
+            "title": "Provenance metadata",
+            "description": "OPTIONAL. Authorship and confidence metadata. Absent implies AI-defined with full confidence.",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          }
+        },
+        "dependencies": {
+          "identificationGroup": {
+            "properties": {
+              "sourceIdentification": {
+                "enum": [
+                  true
+                ]
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/externalSystemTypeOfActor.json",
+      "schema": {
+        "title": "External system type of actor object",
+        "description": "The object provides information about a type of actor being consisted of one or a few systems like external API, FILE interface and so on. The kind of actor you SHOULD use, for example, when designing a limited network connection between an identifiable external system and cloud computing. https://docs.reindeer.tech/index.html#s-actor-system",
+        "type": "object",
+        "required": [
+          "type",
+          "title",
+          "description",
+          "sourceIdentification"
+        ],
+        "properties": {
+          "type": {
+            "title": "Type of actor",
+            "description": "REQUIRED. Fixed value, 'externalSystem'. https://docs.reindeer.tech/index.html#s-actor-system",
+            "type": "string",
+            "enum": [
+              "externalSystem"
+            ]
+          },
+          "title": {
+            "title": "The title of the external system interface",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 70 letters string of UTF-8. The title of the external system interface. https://docs.reindeer.tech/index.html#s-actor-system",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "description": {
+            "title": "The description of the actor",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. The description of the external system interface. https://docs.reindeer.tech/index.html#s-actor-system",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "sourceIdentification": {
+            "title": "IP, Domain or the other identification",
+            "description": "REQUIRED. Whether specific IP address range or domains is assigned or not. If true, identificationGroup property is required. https://docs.reindeer.tech/index.html#s-actor-system",
+            "type": "boolean"
+          },
+          "identificationGroup": {
+            "title": "The group name of IP address range, domains and so on.",
+            "description": "The group name of IP address range, domains and so on.. Required when sourceIdentification propery is true. And MUST NOT use when sourceIdentification propery is false. https://docs.reindeer.tech/index.html#s-actor-system",
+            "type": "string",
+            "$ref": "https://reindeer.tech/adl-schema/v3/ip.json"
+          },
+          "_meta": {
+            "title": "Provenance metadata",
+            "description": "OPTIONAL. Authorship and confidence metadata. Absent implies AI-defined with full confidence.",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          }
+        },
+        "dependencies": {
+          "identificationGroup": {
+            "properties": {
+              "sourceIdentification": {
+                "enum": [
+                  true
+                ]
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/resource.json",
+      "schema": {
+        "title": "Resource object",
+        "description": "The object provides information about cloud computing resources used by this system. It MUST be references of the external file formatted by JSON, YAML or HCL. And it SHOULD be well-formatted data for cloud automation tools like below.\nAWS CloudFormation\nAzure Resource Manager\nGoogle Cloud Deployment Manager\nAlibaba Cloud Resource Orchestration Service\nTerraform https://docs.reindeer.tech/index.html#s-resource",
+        "type": "object",
+        "required": [
+          "type",
+          "$ref"
+        ],
+        "properties": {
+          "type": {
+            "title": "Language type",
+            "description": "REQUIRED. Type of the cloud automation language. It MUST be one of the following values. \nacf : AWS CloudFormation. \narm : Azure Resource Manager. \ngdm : Google Cloud Deployment Manager. \naro : Alicloud Resource Orchestration Service. \ntfm: Terraform. \nslf: ServerlessFramework. \noth : Others. https://docs.reindeer.tech/index.html#s-resource",
+            "type": "string",
+            "enum": [
+              "acf",
+              "arm",
+              "gdm",
+              "aro",
+              "tfm",
+              "slf",
+              "oth"
+            ]
+          },
+          "$ref": {
+            "title": "Reference",
+            "description": "REQUIRED. Reference to the file written by cloud automation language. Same as the $ref item of Reference object. This MUST point to the external file with extension, .json, .yaml, .yml or .tf. And the extension SHOULD be used by external tools to detect the file format of the link. https://docs.reindeer.tech/index.html#s-ref",
+            "type": "string",
+            "default": "externalFile.json",
+            "pattern": "^[a-zA-Z0-9_.\\-]+\\.(yaml|yml|json|tf)$"
+          },
+          "_meta": {
+            "title": "Provenance metadata",
+            "description": "OPTIONAL. Authorship and confidence metadata. Absent implies AI-defined with full confidence.",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/usecase.json",
+      "schema": {
+        "title": "UseCase object",
+        "description": "The object provides information about the use case of the system by associating some actors and resources by the purpose of running the specific function. It SHOULD be comprehensive for designing and auditing the ADL correctly. https://docs.reindeer.tech/index.html#s-usecase",
+        "type": "object",
+        "required": [
+          "title",
+          "description",
+          "trigger",
+          "traffics"
+        ],
+        "properties": {
+          "title": {
+            "title": "The title of the use case",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 70 letters string of UTF-8. The title of the use case. https://docs.reindeer.tech/index.html#s-usecase",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "description": {
+            "title": "The description of the use case",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. The description of the use case. https://docs.reindeer.tech/index.html#s-usecase",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "trigger": {
+            "title": "Trigger of the use case",
+            "description": "REQUIRED. One of the types of trigger object. The trigger means the initial event of this use case. https://docs.reindeer.tech/index.html#s-trigger",
+            "type": "object",
+            "oneOf": [
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/sessionAccessTypeOfTrigger.json"
+              },
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/messageAccessTypeOfTrigger.json"
+              },
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/streamAccessTypeOfTrigger.json"
+              },
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/timedActionTypeOfTrigger.json"
+              },
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/stateActionTypeOfTrigger.json"
+              }
+            ]
+          },
+          "traffics": {
+            "title": "Traffics of the use case",
+            "description": "REQUIRED. Holding the list of traffic objects. Each traffic is one of the types of traffic objects. The traffic means related data transfer route within the use case. https://docs.reindeer.tech/index.html#s-traffic",
+            "oneOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "array"
+              }
+            ],
+            "patternProperties": {
+              "^[0-9a-zA-Z]+$": {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/passThroughRatioTypeOfTraffic.json"
+              }
+            },
+            "additionalProperties": false
+          },
+          "maxPerformanceDurationRatio": {
+            "title": "Monthly duration ratio of maximum performance",
+            "description": "When calculating the cost required for the use case, this value is used to synthesize the max and min values ​​of each Range values ​​object included in trigger and traffic. For example, in the case of a design that improves DAU by advertising effect only 3 days a month, the DAU value is expressed as min: 0.01, max: 0.1, and this value is expressed as 0.1. CloudDesign expresses performance and cost based on monthly usage, but with this value, it is possible to record a design that expects a maximum instantaneous performance of 100 rps while the monthly average is 1 rps. https://docs.reindeer.tech/index.html#s-usecase",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/license.json",
+      "schema": {
+        "title": "License object",
+        "description": "License information for the ADL. https://docs.reindeer.tech/index.html#s-license",
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "if": {
+          "properties": {
+            "type": {
+              "enum": [
+                "Closed",
+                "OtherOpen"
+              ]
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "provider"
+          ]
+        },
+        "properties": {
+          "type": {
+            "title": "The license type of the ADL",
+            "description": "REQUIRED. This is the ADL license type. MUST be one of the following values: (CC0 recommended): CC0 Apache-2.0 MIT BSD-2-Clause OtherOpen Closed https://docs.reindeer.tech/index.html#s-license",
+            "type": "string",
+            "default": "CC0",
+            "enum": [
+              "CC0",
+              "Apache-2.0",
+              "MIT",
+              "BSD-2-Clause",
+              "OtherOpen",
+              "Closed"
+            ]
+          },
+          "provider": {
+            "title": "Optional. The license provider or license name",
+            "description": "The license provider or license name. You MUST not use this parameter when the type is not OtherOpen and Closed. https://docs.reindeer.tech/index.html#s-license",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/author.json",
+      "schema": {
+        "title": "Author object",
+        "description": "The object provides information about authors and their roles on the ADL. It SHOULD be comprehensive for helping others find the person who has correct knowledge about the system, the cloud computing technology, and the market the system is serving. https://docs.reindeer.tech/index.html#s-author",
+        "type": "object",
+        "required": [
+          "roles",
+          "joinedAt"
+        ],
+        "properties": {
+          "roles": {
+            "title": "Roles of author",
+            "description": "REQUIRED. Holds a set of roles related to the ADL. Each role MUST be one of below strings. \nplanner: Planing the cloud computing adoption. \ndesigner: Design the cloud computing architecture. \nauditor: Audit the ADL. \noperator: Operating the system designed by ADL. \nothers: Other role. https://docs.reindeer.tech/index.html#s-author",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "planner",
+                "designer",
+                "auditor",
+                "operator",
+                "others"
+              ]
+            }
+          },
+          "joinedAt": {
+            "title": "Joined time",
+            "description": "REQUIRED. The time when the author was joined at this ADL creation / operation. It MUST be the UNIXTIME format. https://docs.reindeer.tech/index.html#s-author",
+            "type": "integer",
+            "minimum": 1
+          },
+          "leavedAt": {
+            "title": "Leaved time",
+            "description": "REQUIRED. The time when the author was leaved at this ADL creation / operation. It MUST be the UNIXTIME format. https://docs.reindeer.tech/index.html#s-author",
+            "type": "integer",
+            "minimum": 1
+          },
+          "sign": {
+            "title": "Sign",
+            "description": "Sign of the author. This value should be automatically generated by the signature support tool and is usually blank. https://docs.reindeer.tech/index.html#s-author",
+            "type": "string",
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/organization.json",
+      "schema": {
+        "title": "Organization object",
+        "description": "The object provides information about organizations related to the ADL. It SHOULD be comprehensive for helping others find the organization who has correct knowledge about the system, the cloud computing technology, and the market the system is serving. https://docs.reindeer.tech/index.html#s-organization",
+        "type": "object",
+        "required": [
+          "joinedAt"
+        ],
+        "properties": {
+          "joinedAt": {
+            "title": "Joined time",
+            "description": "REQUIRED. The time when the organization was joined at this ADL creation / operation. It MUST be the UNIXTIME format. https://docs.reindeer.tech/index.html#s-organization",
+            "type": "integer",
+            "minimum": 1
+          },
+          "leavedAt": {
+            "title": "Leaved time",
+            "description": "REQUIRED. The time when the organization was leaved at this ADL creation / operation. It MUST be the UNIXTIME format. https://docs.reindeer.tech/index.html#s-organization",
+            "type": "integer",
+            "minimum": 1
+          },
+          "sign": {
+            "title": "Sign",
+            "description": "Sign of the organization. This value should be automatically generated by the signature support tool and is usually blank. https://docs.reindeer.tech/index.html#s-organization",
+            "type": "string",
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/market.json",
+      "schema": {
+        "title": "Market object",
+        "description": "The object provides information about the market. It MAY be including the result of your research or third party's survey. https://docs.reindeer.tech/index.html#s-market",
+        "type": "object",
+        "required": [
+          "title",
+          "description",
+          "num",
+          "estimatedBy",
+          "estimatedAt"
+        ],
+        "properties": {
+          "title": {
+            "title": "Title of the market",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 70 letters string of UTF-8. The content SHOULD be unique on this ADL by including the words describing a member's properties, interest, estimated year and so on. https://docs.reindeer.tech/index.html#s-market",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "description": {
+            "title": "Description of the market",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. The description of the market. It SHOULD be including the words describing the author, estimation purpose and so on. This text MAY help the designer's decision whether this information can be reused by other design or not. https://docs.reindeer.tech/index.html#s-market",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "num": {
+            "title": "Number of members of the market",
+            "description": "REQUIRED. The number of members. https://docs.reindeer.tech/index.html#s-market",
+            "type": "integer",
+            "minimum": 1
+          },
+          "estimatedBy": {
+            "title": "The author of this estimation",
+            "description": "REQUIRED. The author of this estimation. https://docs.reindeer.tech/index.html#s-market",
+            "type": "string"
+          },
+          "estimatedAt": {
+            "title": "The date of estimation",
+            "description": "REQUIRED. The time when it was estimated at. It MUST be the UNIXTIME format. https://docs.reindeer.tech/index.html#s-market",
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/infoType.json",
+      "schema": {
+        "title": "InfoType object",
+        "description": "The objects represent the information's type and required security level. You SHOULD define the information types and classify the information received, stored, treated at the cloud computing resources. https://docs.reindeer.tech/index.html#s-infoType",
+        "type": "object",
+        "required": [
+          "title",
+          "description",
+          "confidential",
+          "privacy",
+          "definedBy",
+          "definedAt"
+        ],
+        "properties": {
+          "title": {
+            "title": "Title",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 70 letters string of UTF-8. The name of the information type.",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "description": {
+            "title": "Description",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. Describing classification detail.",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "confidential": {
+            "title": "confidential flag",
+            "description": "REQUIRED. Confidential information or not. https://docs.reindeer.tech/index.html#s-infoType",
+            "type": "boolean"
+          },
+          "privacy": {
+            "title": "privacy flag",
+            "description": "REQUIRED. Privacy information or not. It means the information is needed to be protected as legally. https://docs.reindeer.tech/index.html#s-infoType",
+            "type": "boolean"
+          },
+          "definedBy": {
+            "title": "The author of this infotype",
+            "description": "REQUIRED. The author of this definition. https://docs.reindeer.tech/index.html#s-infoType",
+            "type": "string"
+          },
+          "definedAt": {
+            "title": "The date of the definition",
+            "description": "REQUIRED. The time when it was defined at. It MUST be the UNIXTIME format. https://docs.reindeer.tech/index.html#s-infoType",
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/title.json",
+      "schema": {
+        "type": "object",
+        "patternProperties": {
+          "^[a-z]{2}$": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 70
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/description.json",
+      "schema": {
+        "type": "object",
+        "patternProperties": {
+          "^[a-z]{2}$": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/ip.json",
+      "schema": {
+        "type": "string",
+        "pattern": "^[a-zA-Z0-9_.\\-]+$"
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/refToActor.json",
+      "schema": {
+        "title": "Reference",
+        "description": "This is a reference specification object used when referencing JSON/YAML objects in files for ADL or Cloud Automation Tools from various fields of ADL. Reference objects are defined by JSON references and follow the same structure, behavior, and rules. In this specification, reference resolution is done as defined in the JSON Reference Specification, not the JSON Schema Specification. https://docs.reindeer.tech/index.html#s-ref",
+        "type": "object",
+        "required": [
+          "$ref"
+        ],
+        "properties": {
+          "$ref": {
+            "title": "Reference",
+            "description": "REQUIRED. Reference strings. In the case of referencing the object in the same file, you MUST start with #/, and MUST always describe the path from the root object. When specifying a reference to the external file, you MUST start with the file name with the extension .json, .yaml or .yml. After that, you MUST describe the same as in the same file reference. https://docs.reindeer.tech/index.html#s-ref",
+            "type": "string",
+            "pattern": "^#/actors/[a-zA-Z0-9]+$"
+          }
+        }
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/refToResources.json",
+      "schema": {
+        "title": "Reference",
+        "description": "This is a reference specification object used when referencing JSON/YAML objects in files for ADL or Cloud Automation Tools from various fields of ADL. Reference objects are defined by JSON references and follow the same structure, behavior, and rules. In this specification, reference resolution is done as defined in the JSON Reference Specification, not the JSON Schema Specification. https://docs.reindeer.tech/index.html#s-ref",
+        "type": "object",
+        "required": [
+          "$ref"
+        ],
+        "properties": {
+          "$ref": {
+            "title": "Reference",
+            "description": "REQUIRED. Reference strings. In the case of referencing the object in the same file, you MUST start with #/, and MUST always describe the path from the root object. When specifying a reference to the external file, you MUST start with the file name with the extension .json, .yaml or .yml. After that, you MUST describe the same as in the same file reference. https://docs.reindeer.tech/index.html#s-ref",
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_\\-\\.\\/]*\\.(yaml|yml|json|tf)#/.+$"
+          }
+        }
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/refToTrigger.json",
+      "schema": {
+        "title": "Reference",
+        "description": "This is a reference specification object used when referencing JSON/YAML objects in files for ADL or Cloud Automation Tools from various fields of ADL. Reference objects are defined by JSON references and follow the same structure, behavior, and rules. In this specification, reference resolution is done as defined in the JSON Reference Specification, not the JSON Schema Specification. https://docs.reindeer.tech/index.html#s-ref",
+        "type": "object",
+        "required": [
+          "$ref"
+        ],
+        "properties": {
+          "$ref": {
+            "title": "Reference",
+            "description": "REQUIRED. Reference strings. In the case of referencing the object in the same file, you MUST start with #/, and MUST always describe the path from the root object. When specifying a reference to the external file, you MUST start with the file name with the extension .json, .yaml or .yml. After that, you MUST describe the same as in the same file reference. https://docs.reindeer.tech/index.html#s-ref",
+            "type": "string",
+            "pattern": "^#/useCases/[a-zA-Z0-9]+/trigger$"
+          }
+        }
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/refToTraffic.json",
+      "schema": {
+        "title": "Reference",
+        "description": "This is a reference specification object used when referencing JSON/YAML objects in files for ADL or Cloud Automation Tools from various fields of ADL. Reference objects are defined by JSON references and follow the same structure, behavior, and rules. In this specification, reference resolution is done as defined in the JSON Reference Specification, not the JSON Schema Specification. https://docs.reindeer.tech/index.html#s-ref",
+        "type": "object",
+        "required": [
+          "$ref"
+        ],
+        "properties": {
+          "$ref": {
+            "title": "Reference",
+            "description": "REQUIRED. Reference strings. In the case of referencing the object in the same file, you MUST start with #/, and MUST always describe the path from the root object. When specifying a reference to the external file, you MUST start with the file name with the extension .json, .yaml or .yml. After that, you MUST describe the same as in the same file reference. https://docs.reindeer.tech/index.html#s-ref",
+            "type": "string",
+            "pattern": "^#/useCases/[a-zA-Z0-9]+/traffics/[a-zA-Z0-9]+$"
+          }
+        }
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/refToInfoType.json",
+      "schema": {
+        "title": "Reference",
+        "description": "This is a reference specification object used when referencing JSON/YAML objects in files for ADL or Cloud Automation Tools from various fields of ADL. Reference objects are defined by JSON references and follow the same structure, behavior, and rules. In this specification, reference resolution is done as defined in the JSON Reference Specification, not the JSON Schema Specification. https://docs.reindeer.tech/index.html#s-ref",
+        "type": "object",
+        "required": [
+          "$ref"
+        ],
+        "properties": {
+          "$ref": {
+            "title": "Reference",
+            "description": "REQUIRED. Reference strings. In the case of referencing the object in the same file, you MUST start with #/, and MUST always describe the path from the root object. When specifying a reference to the external file, you MUST start with the file name with the extension .json, .yaml or .yml. After that, you MUST describe the same as in the same file reference. https://docs.reindeer.tech/index.html#s-ref",
+            "type": "string",
+            "pattern": "^#/components/infoTypes/[a-zA-Z0-9]+$"
+          }
+        }
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/timedActionTypeOfTrigger.json",
+      "schema": {
+        "title": "Timed action type of trigger object",
+        "description": "This is a kind of trigger by actors or resources. Describing the timed action from actors or cloud computing resources to other ones. https://docs.reindeer.tech/index.html#s-trigger-timedAction",
+        "type": "object",
+        "required": [
+          "type",
+          "description",
+          "infoType",
+          "ports",
+          "internet",
+          "restriction",
+          "onlineRps",
+          "reqMonth",
+          "kbRequest",
+          "kbResponse",
+          "start",
+          "end",
+          "endpointTitle",
+          "storedRatio"
+        ],
+        "properties": {
+          "type": {
+            "title": "Type",
+            "description": "REQUIRED. Fixed value: 'timedAction'. https://docs.reindeer.tech/index.html#s-trigger-timedAction",
+            "type": "string",
+            "enum": [
+              "timedAction"
+            ]
+          },
+          "description": {
+            "title": "The description of the trigger",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. The description of the trigger. It SHOULD be the concise memo describing the purpose of this trigger. https://docs.reindeer.tech/index.html#s-trigger-timedAction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "infoType": {
+            "title": "Information type",
+            "description": "REQUIRED. Reference to the InfoType object. Indicates the type of information handled in this trigger. https://docs.reindeer.tech/index.html#s-infoType",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "ports": {
+            "title": "Ports",
+            "description": "REQUIRED. Port numbers required at the end points of this trigger. https://docs.reindeer.tech/index.html#s-trigger-timedAction",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "internet": {
+            "title": "Internet usage",
+            "description": "REQUIRED. Whether use internet use or not for this connection. https://docs.reindeer.tech/index.html#s-trigger-timedAction",
+            "type": "boolean"
+          },
+          "restriction": {
+            "title": "Restricted by IP range, domain or the others",
+            "description": "REQUIRED. Source IP, Domain or the other restriction at the end points of this trigger. https://docs.reindeer.tech/index.html#s-trigger-timedAction",
+            "type": "boolean"
+          },
+          "onlineRps": {
+            "title": "Requests per second",
+            "description": "REQUIRED. Number of requests per second when this trigger fires. Specify the required performance from the start point (start field) to the end point (end field). For example, if the batch system runs every Monday morning and each batch accesses the external API with a throughput of 2 times per second it is 2.0. https://docs.reindeer.tech/index.html#s-trigger-timedAction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "reqMonth": {
+            "title": "Requests per month",
+            "description": "REQUIRED. Monthly request numbers from the start point to the endpoints. For example, it's 3000 in case of that the batch system sends mail magazine 3 times to 1000 persons per month. https://docs.reindeer.tech/index.html#s-trigger-timedAction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbRequest": {
+            "title": "Request size (KB)",
+            "description": "REQUIRED. Request data size per request from the start point to the end point as the unit of KB. https://docs.reindeer.tech/index.html#s-trigger-timedAction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbResponse": {
+            "title": "Response size (KB)",
+            "description": "REQUIRED. Response data size per request from the start point to the end point as the unit of KB. https://docs.reindeer.tech/index.html#s-trigger-timedAction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "start": {
+            "title": "The start point of this trigger",
+            "description": "REQUIRED. The start point of the trigger. MUST be a reference to a resource object (a scheduler that starts processing at set times, or a resource that reports state changes). https://docs.reindeer.tech/index.html#s-trigger-timedAction",
+            "oneOf": [
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/refToResources.json"
+              }
+            ]
+          },
+          "end": {
+            "title": "The end point of this trigger",
+            "description": "REQUIRED. It MUST be a reference to the actor object or the resource object. The end point of this traffic. https://docs.reindeer.tech/index.html#s-trigger-timedAction",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "$ref": "https://reindeer.tech/adl-schema/v3/refToActor.json"
+                },
+                {
+                  "type": "object",
+                  "$ref": "https://reindeer.tech/adl-schema/v3/refToResources.json"
+                }
+              ]
+            }
+          },
+          "endpointTitle": {
+            "title": "The name of the endpoint",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 70 letters string of UTF-8. The name of the endpoint. https://docs.reindeer.tech/index.html#s-trigger-timedAction",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "storedRatio": {
+            "title": "Stored data size ratio",
+            "description": "REQUIRED. The ratio of the stored data volume among the received data to the ends. For example, it is 1.0 in case of that the database resource in this trigger is received 10GB/Month from the app server and store all of them to the database. When the ends don't store the traffic data, it's 0. https://docs.reindeer.tech/index.html#s-trigger-timedAction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "storedInfoType": {
+            "title": "Information type",
+            "description": "Reference to the InfoType object. Indicates the type of information stored at the ends of this trigger. https://docs.reindeer.tech/index.html#s-trigger-timedAction",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "storageDescription": {
+            "title": "Purpose of the storage",
+            "description": "The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. The description of the endpoint. It SHOULD be the concise memo describing the purpose of storage of the ends in this trigger. https://docs.reindeer.tech/index.html#s-trigger-timedAction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "_meta": {
+            "title": "Provenance metadata",
+            "description": "OPTIONAL. Authorship and confidence metadata. Absent implies AI-defined with full confidence.",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          },
+          "protocol": {
+            "title": "Protocol",
+            "description": "OPTIONAL. The protocol of the entry point. Examples: https, http3, websocket, grpc, smtp, sms, sip, mqtt, amqp, sftp, rtmp, webrtc, udp, tcp, rdp, ssh. Values not in this list are allowed. https://docs.reindeer.tech/index.html#s-trigger-protocol",
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9.+-]*$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/passThroughRatioTypeOfTraffic.json",
+      "schema": {
+        "title": "Pass through ratio type of traffic object",
+        "description": "This is a kind of traffic object. It can represent traffic that occurs in the form of passing a part of the request received from the start point to the subsequent resources. For example, it can represent a chain of communication where a load balancer sends a received request to a web server, and an application generates a mail delivery queue based on the received request. At this time, the size of the data received by this traffic endpoint (end field) is the percentage of the request received by the previous communication (source field) of this traffic. Therefore, if you extend the data to 3 MB in the server and pass it to the end point of this traffic after the previous communication receives the 1 MB POST value, the data size can be expressed as 300% (passThroughReqRatio> field's value is 3). https://docs.reindeer.tech/index.html#s-traffic",
+        "type": "object",
+        "required": [
+          "type",
+          "description",
+          "infoType",
+          "ports",
+          "internet",
+          "restriction",
+          "source",
+          "end",
+          "passThroughReqRatio",
+          "compositResRatio",
+          "endpointTitle",
+          "storedRatio"
+        ],
+        "properties": {
+          "type": {
+            "title": "Type",
+            "description": "REQUIRED. Fixed value, 'passThroughRatio'. https://docs.reindeer.tech/index.html#s-traffic",
+            "type": "string",
+            "enum": [
+              "passThroughRatio"
+            ]
+          },
+          "description": {
+            "title": "The description of the traffic.",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. The description of the traffic. It SHOULD be the concise memo describing the purpose of this traffic. https://docs.reindeer.tech/index.html#s-traffic",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "infoType": {
+            "title": "Information type",
+            "description": "REQUIRED. Reference to the InfoType object. Indicates the type of information handled in this traffic.　https://docs.reindeer.tech/index.html#s-infoType",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "ports": {
+            "title": "Ports",
+            "description": "REQUIRED. Port numbers required at the end points of this traffic. https://docs.reindeer.tech/index.html#s-traffic-passThroughRatio",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "internet": {
+            "title": "Internet usage",
+            "description": "REQUIRED. Use internet or not for this connection. https://docs.reindeer.tech/index.html#s-traffic-passThroughRatio",
+            "type": "boolean"
+          },
+          "restriction": {
+            "title": "Restricted by IP range, domain or the others",
+            "description": "REQUIRED. Source IP, Domain or the other restriction at the end points of this trigger. https://docs.reindeer.tech/index.html#s-traffic-passThroughRatio",
+            "type": "boolean"
+          },
+          "source": {
+            "title": "Source objects",
+            "description": "REQUIRED. References to the trigger object or the traffic object. The start point of this traffic. This effects to or is affected by all of the resources or actor object described in the end fields. To express a sequential chain of heterogeneous resources (e.g. CloudFront → API Gateway → Lambda), create multiple traffic objects and set this field of each subsequent traffic to reference the preceding traffic. This is the prescribed pattern for chaining different resource types. https://docs.reindeer.tech/index.html#s-traffic-passThroughRatio",
+            "type": "object",
+            "oneOf": [
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/refToTrigger.json"
+              },
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/refToTraffic.json"
+              }
+            ]
+          },
+          "end": {
+            "title": "End objects",
+            "description": "REQUIRED. References to the actor objects or the each resource item described in the resource object. The end point of this traffic. When multiple resources are listed, the traffic is assumed to be evenly distributed across all of them. This covers homogeneous resources (e.g. multiple EC2 instances in an auto-scaling group) as well as tightly coupled resource groups that must be provisioned together (e.g. a DB instance and its parameter group). However, if the resources listed here have a chain relationship — meaning traffic flows sequentially from one to another (e.g. CloudFront → API Gateway → Lambda) — they MUST NOT be combined in this array. Express each hop as a separate traffic object linked via the source field instead. Combining chained resources in a single end array conflates sequential flow with parallel distribution and produces incorrect traffic calculations. https://docs.reindeer.tech/index.html#s-traffic-passThroughRatio",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "$ref": "https://reindeer.tech/adl-schema/v3/refToActor.json"
+                },
+                {
+                  "type": "object",
+                  "$ref": "https://reindeer.tech/adl-schema/v3/refToResources.json"
+                }
+              ]
+            }
+          },
+          "passThroughReqRatio": {
+            "title": "Request ratio",
+            "description": "REQUIRED. Indicates what percentage of the requests received by prior trigger or traffic (source field) will flow to the endpoint (end) of this traffic. For example, if the former trigger receives 100,000/M requests from the user and use internal cash for 50% response and pass 50% request to this traffic, this value will be 0.5. https://docs.reindeer.tech/index.html#s-traffic-passThroughRatio",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "compositResRatio": {
+            "title": "Composition ratio",
+            "description": "REQUIRED. Based on the size of the response data handled by the former trigger or traffic (source field), describes that this traffic response what percentage of that size to the source. For example, if the former trigger returns data of 10GB/Month to the user and this compositResRatio is 0.5, this traffic will response 5GB/Month of data to the former trigger. https://docs.reindeer.tech/index.html#s-traffic-passThroughRatio",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "endpointTitle": {
+            "title": "The name of the endpoint",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 70 letters string of UTF-8. The name of the endpoint. https://docs.reindeer.tech/index.html#s-traffic-passThroughRatio",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "storedRatio": {
+            "title": "Stored data size ratio",
+            "description": "Required. End indicates the ratio of the data size stored in end to the received data. For example, if you want to store all the data that the source sends to the end with this traffic on the end, this value will be 1.0. 0 if no data is stored. https://docs.reindeer.tech/index.html#s-traffic-passThroughRatio",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "storedInfoType": {
+            "title": "Information type of the storage",
+            "description": "Reference to the InfoType object. Indicates the type of information stored at the ends of this traffic. https://docs.reindeer.tech/index.html#s-traffic-passThroughRatio",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "storageDescription": {
+            "title": "Purpose of the storage",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. The description of the endpoint. It SHOULD be the concise memo describing the purpose of storage of the ends in this traffic. https://docs.reindeer.tech/index.html#s-traffic-passThroughRatio",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "_meta": {
+            "title": "Provenance metadata",
+            "description": "OPTIONAL. Authorship and confidence metadata. Absent implies AI-defined with full confidence.",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/rangeValue.json",
+      "schema": {
+        "title": "Range values object",
+        "description": "An object representing the range values used at fields on ADL. https://docs.reindeer.tech/index.html#s-rangeValue",
+        "type": "object",
+        "required": [
+          "max",
+          "min"
+        ],
+        "properties": {
+          "max": {
+            "title": "Max value",
+            "description": "REQUIRED. Max value of the range value.",
+            "type": "number",
+            "minimum": 0
+          },
+          "min": {
+            "title": "Min value",
+            "description": "REQUIRED. Min value of the range value.",
+            "type": "number",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/meta.json",
+      "schema": {
+        "title": "Provenance metadata object",
+        "description": "An optional object tracking the authorship and confidence of a ADL node (actor, resource, traffic, trigger). Absence implies AI-defined with full confidence. Distinguishes AI inference from human curation.",
+        "type": "object",
+        "properties": {
+          "d": {
+            "title": "Defined by",
+            "description": "OPTIONAL. Authorship marker. 'ai' for AI-generated, 'h:<userId>' for human-defined. Absent means 'ai'.",
+            "type": "string"
+          },
+          "t": {
+            "title": "Defined at",
+            "description": "OPTIONAL. Timestamp (epoch seconds) when the node was last modified by the actor named in 'd'.",
+            "type": "integer",
+            "minimum": 0
+          },
+          "c": {
+            "title": "Confidence",
+            "description": "OPTIONAL. Confidence in the AI-generated value (0-1). Only meaningful when 'd' is 'ai' or absent. Absent means 1.0.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/sessionAccessTypeOfTrigger.json",
+      "schema": {
+        "title": "Trigger object of sessionAccess type",
+        "description": "Access in which an actor (persons or market) operates screens or terminals and repeats interactions (web and app screens, VDI, RDP, business terminals). https://docs.reindeer.tech/index.html#s-trigger-sessionaccess",
+        "type": "object",
+        "required": [
+          "type",
+          "description",
+          "infoType",
+          "ports",
+          "internet",
+          "restriction",
+          "dau",
+          "pagesVisit",
+          "kbPage",
+          "reqPage",
+          "busyHours",
+          "postsVisit",
+          "kbPost",
+          "start",
+          "end",
+          "endpointTitle",
+          "storedRatio",
+          "protocol"
+        ],
+        "properties": {
+          "type": {
+            "title": "Type of this trigger",
+            "description": "REQUIRED. Fixed value: 'sessionAccess'. https://docs.reindeer.tech/index.html#s-trigger-sessionaccess",
+            "type": "string",
+            "enum": [
+              "sessionAccess"
+            ]
+          },
+          "description": {
+            "title": "Description of trigger",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. The description of the trigger. It SHOULD be the concise memo describing the purpose of this trigger. https://docs.reindeer.tech/index.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "infoType": {
+            "title": "Information type",
+            "description": "REQUIRED. Reference to the InfoType object. Indicates the type of information handled in this trigger.  https://docs.reindeer.tech/index.html#s-infoType",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "ports": {
+            "title": "Ports",
+            "description": "REQUIRED. Port numbers required at the end points (defined at the end field) of this trigger. https://docs.reindeer.tech/index.html#s-trigger-sessionaccess",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "internet": {
+            "title": "Internet usage",
+            "description": "REQUIRED. Use internet or not for this trigger. https://docs.reindeer.tech/index.html#s-trigger-sessionaccess",
+            "type": "boolean"
+          },
+          "restriction": {
+            "title": "Restricted by IP range, domain or the others",
+            "description": "REQUIRED. Source IP, Domain or the other restriction at the end points of this trigger. https://docs.reindeer.tech/index.html#s-trigger-sessionaccess",
+            "type": "boolean"
+          },
+          "dau": {
+            "title": "Daily Active User ratio",
+            "description": "REQUIRED. Daily Active User ratio. For example, it will be 0.01 in case of that avarage 1 percent of actors, referred at this start field, will access to the resources, referred at this end field, per day. https://docs.reindeer.tech/index.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "pagesVisit": {
+            "title": "Page numbers per visit",
+            "description": "REQUIRED. Average page numbers per visit. Representing how many pages visitors will open per visit. https://docs.reindeer.tech/index.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbPage": {
+            "title": "Page size (KB)",
+            "description": "REQUIRED. Average page data size as a unit of KB. https://docs.reindeer.tech/index.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "reqPage": {
+            "title": "Request number per page",
+            "description": "REQUIRED. Average request numbers per page. Representing how many requests (Requests to images and HTML etc. that make up the page) will be used per page. https://docs.reindeer.tech/index.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "busyHours": {
+            "title": "Busy hours within a day",
+            "description": "REQUIRED. Busy hours per day. For example, it's 6, in the case of that most access is concentrated amoung AM 9:00 - AM 12:00 and PM 17:00 - PM 20:00 per day. https://docs.reindeer.tech/index.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "postsVisit": {
+            "title": "POST numbers per visit",
+            "description": "REQUIRED. Representing what percentage of the visitors will POST. For example, it's 0.1 in case of that 100 POST will sent per day among 100,000 actors and 0.01 dau. https://docs.reindeer.tech/index.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbPost": {
+            "title": "Post size (KB)",
+            "description": "REQUIRED. Average POST data size as a unit of KB. https://docs.reindeer.tech/index.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "start": {
+            "title": "The start point of this trigger",
+            "description": "REQUIRED. The start point of the trigger. MUST be a reference to an actor object of the market or persons type. https://docs.reindeer.tech/index.html#s-trigger-sessionaccess",
+            "oneOf": [
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/refToActor.json"
+              }
+            ]
+          },
+          "end": {
+            "title": "The end point of this traffic",
+            "description": "REQUIRED. It MUST be references to the each resource item described in the resource object. The end point of this traffic. https://docs.reindeer.tech/index.html#s-resource",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "$ref": "https://reindeer.tech/adl-schema/v3/refToResources.json"
+            }
+          },
+          "endpointTitle": {
+            "title": "The name of the endpoint",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 70 letters string of UTF-8. The name of the endpoint. https://docs.reindeer.tech/index.html#s-trigger-sessionaccess",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "storedRatio": {
+            "title": "Stored data size ratio",
+            "description": "REQUIRED. The ratio of the end's stored data volume among the received data. For example, if this trigger's end stores all of the data that the actor sends to end, this value will be 1.0. And it's 0 if not stored. https://docs.reindeer.tech/index.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "storedInfoType": {
+            "title": "Information type of stored data",
+            "description": "Reference to the InfoType object. Indicates the type of information stored at the ends of this trigger. https://docs.reindeer.tech/index.html#s-infoType",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "storageDescription": {
+            "title": "Purpose of the storage",
+            "description": "The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. The description of the endpoint. It SHOULD be the concise memo describing the purpose of storage of the ends in this trigger. https://docs.reindeer.tech/index.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "_meta": {
+            "title": "Provenance metadata",
+            "description": "OPTIONAL. Authorship and confidence metadata. Absent implies AI-defined with full confidence.",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          },
+          "protocol": {
+            "title": "Protocol",
+            "description": "REQUIRED. The protocol of the entry point. Examples: https, http3, websocket, grpc, smtp, sms, sip, mqtt, amqp, sftp, rtmp, webrtc, udp, tcp, rdp, ssh. Values not in this list are allowed. https://docs.reindeer.tech/index.html#s-trigger-protocol",
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9.+-]*$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/messageAccessTypeOfTrigger.json",
+      "schema": {
+        "title": "Trigger object of messageAccess type",
+        "description": "Access in which an actor (persons, market, externalSystem or devices) delivers one item at a time (API calls, webhooks, email, SMS, MQTT, SFTP). https://docs.reindeer.tech/index.html#s-trigger-messageaccess",
+        "type": "object",
+        "required": [
+          "type",
+          "description",
+          "infoType",
+          "ports",
+          "internet",
+          "restriction",
+          "onlineRps",
+          "reqMonth",
+          "kbRequest",
+          "kbResponse",
+          "start",
+          "end",
+          "endpointTitle",
+          "storedRatio",
+          "protocol"
+        ],
+        "properties": {
+          "type": {
+            "title": "Type",
+            "description": "REQUIRED. Fixed value: 'messageAccess'. https://docs.reindeer.tech/index.html#s-trigger-messageaccess",
+            "type": "string",
+            "enum": [
+              "messageAccess"
+            ]
+          },
+          "description": {
+            "title": "The description of the trigger",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. The description of the trigger. It SHOULD be the concise memo describing the purpose of this trigger. https://docs.reindeer.tech/index.html#s-trigger-messageaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "infoType": {
+            "title": "Information type",
+            "description": "REQUIRED. Reference to the InfoType object. Indicates the type of information handled in this trigger. https://docs.reindeer.tech/index.html#s-infoType",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "ports": {
+            "title": "Ports",
+            "description": "REQUIRED. Port numbers required at the end points of this trigger. https://docs.reindeer.tech/index.html#s-trigger-messageaccess",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "internet": {
+            "title": "Internet usage",
+            "description": "REQUIRED. Whether use internet use or not for this connection. https://docs.reindeer.tech/index.html#s-trigger-messageaccess",
+            "type": "boolean"
+          },
+          "restriction": {
+            "title": "Restricted by IP range, domain or the others",
+            "description": "REQUIRED. Source IP, Domain or the other restriction at the end points of this trigger. https://docs.reindeer.tech/index.html#s-trigger-messageaccess",
+            "type": "boolean"
+          },
+          "onlineRps": {
+            "title": "Requests per second",
+            "description": "REQUIRED. Number of requests per second when this trigger fires. Specify the required performance from the start point (start field) to the end point (end field). For example, if the batch system runs every Monday morning and each batch accesses the external API with a throughput of 2 times per second it is 2.0. https://docs.reindeer.tech/index.html#s-trigger-messageaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "reqMonth": {
+            "title": "Requests per month",
+            "description": "REQUIRED. Monthly request numbers from the start point to the endpoints. For example, it's 3000 in case of that the batch system sends mail magazine 3 times to 1000 persons per month. https://docs.reindeer.tech/index.html#s-trigger-messageaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbRequest": {
+            "title": "Request size (KB)",
+            "description": "REQUIRED. Request data size per request from the start point to the end point as the unit of KB. https://docs.reindeer.tech/index.html#s-trigger-messageaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbResponse": {
+            "title": "Response size (KB)",
+            "description": "REQUIRED. Response data size per request from the start point to the end point as the unit of KB. https://docs.reindeer.tech/index.html#s-trigger-messageaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "start": {
+            "title": "The start point of this trigger",
+            "description": "REQUIRED. The start point of the trigger. MUST be a reference to an actor object. https://docs.reindeer.tech/index.html#s-trigger-messageaccess",
+            "oneOf": [
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/refToActor.json"
+              }
+            ]
+          },
+          "end": {
+            "title": "The end point of this trigger",
+            "description": "REQUIRED. The endpoint of the trigger. MUST be a reference to a resource object. https://docs.reindeer.tech/index.html#s-trigger-messageaccess",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "$ref": "https://reindeer.tech/adl-schema/v3/refToResources.json"
+            }
+          },
+          "endpointTitle": {
+            "title": "The name of the endpoint",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 70 letters string of UTF-8. The name of the endpoint. https://docs.reindeer.tech/index.html#s-trigger-messageaccess",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "storedRatio": {
+            "title": "Stored data size ratio",
+            "description": "REQUIRED. The ratio of the stored data volume among the received data to the ends. For example, it is 1.0 in case of that the database resource in this trigger is received 10GB/Month from the app server and store all of them to the database. When the ends don't store the traffic data, it's 0. https://docs.reindeer.tech/index.html#s-trigger-messageaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "storedInfoType": {
+            "title": "Information type",
+            "description": "Reference to the InfoType object. Indicates the type of information stored at the ends of this trigger. https://docs.reindeer.tech/index.html#s-trigger-messageaccess",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "storageDescription": {
+            "title": "Purpose of the storage",
+            "description": "The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. The description of the endpoint. It SHOULD be the concise memo describing the purpose of storage of the ends in this trigger. https://docs.reindeer.tech/index.html#s-trigger-messageaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "_meta": {
+            "title": "Provenance metadata",
+            "description": "OPTIONAL. Authorship and confidence metadata. Absent implies AI-defined with full confidence.",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          },
+          "protocol": {
+            "title": "Protocol",
+            "description": "REQUIRED. The protocol of the entry point. Examples: https, http3, websocket, grpc, smtp, sms, sip, mqtt, amqp, sftp, rtmp, webrtc, udp, tcp, rdp, ssh. Values not in this list are allowed. https://docs.reindeer.tech/index.html#s-trigger-protocol",
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9.+-]*$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/streamAccessTypeOfTrigger.json",
+      "schema": {
+        "title": "Trigger object of streamAccess type",
+        "description": "Access in which an actor keeps a connection open (voice calls, video ingest, WebSocket, games, direct database connections). https://docs.reindeer.tech/index.html#s-trigger-streamaccess",
+        "type": "object",
+        "required": [
+          "type",
+          "description",
+          "infoType",
+          "ports",
+          "internet",
+          "restriction",
+          "start",
+          "end",
+          "endpointTitle",
+          "storedRatio",
+          "concurrentConnections",
+          "hoursDay",
+          "kbpsUp",
+          "kbpsDown",
+          "protocol"
+        ],
+        "properties": {
+          "type": {
+            "title": "Type",
+            "description": "REQUIRED. Fixed value: 'streamAccess'. https://docs.reindeer.tech/index.html#s-trigger-streamaccess",
+            "type": "string",
+            "enum": [
+              "streamAccess"
+            ]
+          },
+          "description": {
+            "title": "The description of the trigger",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. The description of the trigger. It SHOULD be the concise memo describing the purpose of this trigger. https://docs.reindeer.tech/index.html#s-trigger-streamaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "infoType": {
+            "title": "Information type",
+            "description": "REQUIRED. Reference to the InfoType object. Indicates the type of information handled in this trigger. https://docs.reindeer.tech/index.html#s-infoType",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "ports": {
+            "title": "Ports",
+            "description": "REQUIRED. Port numbers required at the end points of this trigger. https://docs.reindeer.tech/index.html#s-trigger-streamaccess",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "internet": {
+            "title": "Internet usage",
+            "description": "REQUIRED. Whether use internet use or not for this connection. https://docs.reindeer.tech/index.html#s-trigger-streamaccess",
+            "type": "boolean"
+          },
+          "restriction": {
+            "title": "Restricted by IP range, domain or the others",
+            "description": "REQUIRED. Source IP, Domain or the other restriction at the end points of this trigger. https://docs.reindeer.tech/index.html#s-trigger-streamaccess",
+            "type": "boolean"
+          },
+          "start": {
+            "title": "The start point of this trigger",
+            "description": "REQUIRED. The start point of the trigger. MUST be a reference to an actor object. https://docs.reindeer.tech/index.html#s-trigger-streamaccess",
+            "oneOf": [
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/refToActor.json"
+              }
+            ]
+          },
+          "end": {
+            "title": "The end point of this trigger",
+            "description": "REQUIRED. The endpoint of the trigger. MUST be a reference to a resource object. https://docs.reindeer.tech/index.html#s-trigger-streamaccess",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "$ref": "https://reindeer.tech/adl-schema/v3/refToResources.json"
+            }
+          },
+          "endpointTitle": {
+            "title": "The name of the endpoint",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 70 letters string of UTF-8. The name of the endpoint. https://docs.reindeer.tech/index.html#s-trigger-streamaccess",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "storedRatio": {
+            "title": "Stored data size ratio",
+            "description": "REQUIRED. The ratio of the stored data volume among the received data to the ends. For example, it is 1.0 in case of that the database resource in this trigger is received 10GB/Month from the app server and store all of them to the database. When the ends don't store the traffic data, it's 0. https://docs.reindeer.tech/index.html#s-trigger-streamaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "storedInfoType": {
+            "title": "Information type",
+            "description": "Reference to the InfoType object. Indicates the type of information stored at the ends of this trigger. https://docs.reindeer.tech/index.html#s-trigger-streamaccess",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "storageDescription": {
+            "title": "Purpose of the storage",
+            "description": "The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. The description of the endpoint. It SHOULD be the concise memo describing the purpose of storage of the ends in this trigger. https://docs.reindeer.tech/index.html#s-trigger-streamaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "_meta": {
+            "title": "Provenance metadata",
+            "description": "OPTIONAL. Authorship and confidence metadata. Absent implies AI-defined with full confidence.",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          },
+          "concurrentConnections": {
+            "title": "Concurrent connections",
+            "description": "REQUIRED. The number of connections kept open at the same time.",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "hoursDay": {
+            "title": "Hours per day",
+            "description": "REQUIRED. The hours per day that one connection stays open.",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbpsUp": {
+            "title": "Uplink (kbps)",
+            "description": "REQUIRED. The average uplink bandwidth of one connection (actor to end), in kbps.",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbpsDown": {
+            "title": "Downlink (kbps)",
+            "description": "REQUIRED. The average downlink bandwidth of one connection (end to actor), in kbps.",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "protocol": {
+            "title": "Protocol",
+            "description": "REQUIRED. The protocol of the entry point. Examples: https, http3, websocket, grpc, smtp, sms, sip, mqtt, amqp, sftp, rtmp, webrtc, udp, tcp, rdp, ssh. Values not in this list are allowed. https://docs.reindeer.tech/index.html#s-trigger-protocol",
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9.+-]*$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/stateActionTypeOfTrigger.json",
+      "schema": {
+        "title": "Trigger object of stateAction type",
+        "description": "Processing that starts when the state of a monitored resource meets a condition (alarms, budget overruns, security findings). https://docs.reindeer.tech/index.html#s-trigger-stateaction",
+        "type": "object",
+        "required": [
+          "type",
+          "description",
+          "infoType",
+          "ports",
+          "internet",
+          "restriction",
+          "onlineRps",
+          "reqMonth",
+          "kbRequest",
+          "kbResponse",
+          "start",
+          "end",
+          "endpointTitle",
+          "storedRatio",
+          "condition"
+        ],
+        "properties": {
+          "type": {
+            "title": "Type",
+            "description": "REQUIRED. Fixed value: 'stateAction'. https://docs.reindeer.tech/index.html#s-trigger-stateaction",
+            "type": "string",
+            "enum": [
+              "stateAction"
+            ]
+          },
+          "description": {
+            "title": "The description of the trigger",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. The description of the trigger. It SHOULD be the concise memo describing the purpose of this trigger. https://docs.reindeer.tech/index.html#s-trigger-stateaction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "infoType": {
+            "title": "Information type",
+            "description": "REQUIRED. Reference to the InfoType object. Indicates the type of information handled in this trigger. https://docs.reindeer.tech/index.html#s-infoType",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "ports": {
+            "title": "Ports",
+            "description": "REQUIRED. Port numbers required at the end points of this trigger. https://docs.reindeer.tech/index.html#s-trigger-stateaction",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "internet": {
+            "title": "Internet usage",
+            "description": "REQUIRED. Whether use internet use or not for this connection. https://docs.reindeer.tech/index.html#s-trigger-stateaction",
+            "type": "boolean"
+          },
+          "restriction": {
+            "title": "Restricted by IP range, domain or the others",
+            "description": "REQUIRED. Source IP, Domain or the other restriction at the end points of this trigger. https://docs.reindeer.tech/index.html#s-trigger-stateaction",
+            "type": "boolean"
+          },
+          "onlineRps": {
+            "title": "Requests per second",
+            "description": "REQUIRED. Number of requests per second when this trigger fires. Specify the required performance from the start point (start field) to the end point (end field). For example, if the batch system runs every Monday morning and each batch accesses the external API with a throughput of 2 times per second it is 2.0. https://docs.reindeer.tech/index.html#s-trigger-stateaction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "reqMonth": {
+            "title": "Requests per month",
+            "description": "REQUIRED. Monthly request numbers from the start point to the endpoints. For example, it's 3000 in case of that the batch system sends mail magazine 3 times to 1000 persons per month. https://docs.reindeer.tech/index.html#s-trigger-stateaction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbRequest": {
+            "title": "Request size (KB)",
+            "description": "REQUIRED. Request data size per request from the start point to the end point as the unit of KB. https://docs.reindeer.tech/index.html#s-trigger-stateaction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbResponse": {
+            "title": "Response size (KB)",
+            "description": "REQUIRED. Response data size per request from the start point to the end point as the unit of KB. https://docs.reindeer.tech/index.html#s-trigger-stateaction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "start": {
+            "title": "The start point of this trigger",
+            "description": "REQUIRED. The start point of the trigger. MUST be a reference to a resource object (a scheduler that starts processing at set times, or a resource that reports state changes). https://docs.reindeer.tech/index.html#s-trigger-stateaction",
+            "oneOf": [
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/refToResources.json"
+              }
+            ]
+          },
+          "end": {
+            "title": "The end point of this trigger",
+            "description": "REQUIRED. It MUST be a reference to the actor object or the resource object. The end point of this traffic. https://docs.reindeer.tech/index.html#s-trigger-stateaction",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "$ref": "https://reindeer.tech/adl-schema/v3/refToActor.json"
+                },
+                {
+                  "type": "object",
+                  "$ref": "https://reindeer.tech/adl-schema/v3/refToResources.json"
+                }
+              ]
+            }
+          },
+          "endpointTitle": {
+            "title": "The name of the endpoint",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 70 letters string of UTF-8. The name of the endpoint. https://docs.reindeer.tech/index.html#s-trigger-stateaction",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "storedRatio": {
+            "title": "Stored data size ratio",
+            "description": "REQUIRED. The ratio of the stored data volume among the received data to the ends. For example, it is 1.0 in case of that the database resource in this trigger is received 10GB/Month from the app server and store all of them to the database. When the ends don't store the traffic data, it's 0. https://docs.reindeer.tech/index.html#s-trigger-stateaction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "storedInfoType": {
+            "title": "Information type",
+            "description": "Reference to the InfoType object. Indicates the type of information stored at the ends of this trigger. https://docs.reindeer.tech/index.html#s-trigger-stateaction",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "storageDescription": {
+            "title": "Purpose of the storage",
+            "description": "The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. The description of the endpoint. It SHOULD be the concise memo describing the purpose of storage of the ends in this trigger. https://docs.reindeer.tech/index.html#s-trigger-stateaction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "_meta": {
+            "title": "Provenance metadata",
+            "description": "OPTIONAL. Authorship and confidence metadata. Absent implies AI-defined with full confidence.",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          },
+          "condition": {
+            "title": "Condition",
+            "description": "REQUIRED. A description of the state condition that starts the processing, e.g. when errors exceed 10 in 5 minutes. Keys MUST be ISO 639-1 two-letter language codes.",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "protocol": {
+            "title": "Protocol",
+            "description": "OPTIONAL. The protocol of the entry point. Examples: https, http3, websocket, grpc, smtp, sms, sip, mqtt, amqp, sftp, rtmp, webrtc, udp, tcp, rdp, ssh. Values not in this list are allowed. https://docs.reindeer.tech/index.html#s-trigger-protocol",
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9.+-]*$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/devicesTypeOfActor.json",
+      "schema": {
+        "title": "Actor object of devices type",
+        "description": "A group of devices (sensors, in-vehicle devices, terminals). num is the number of devices. https://docs.reindeer.tech/index.html#s-actor-devices",
+        "type": "object",
+        "required": [
+          "type",
+          "title",
+          "description",
+          "num",
+          "sourceIdentification"
+        ],
+        "properties": {
+          "type": {
+            "title": "Type of actor",
+            "description": "REQUIRED. Fixed value, 'persons'. https://docs.reindeer.tech/index.html#s-actor-persons",
+            "type": "string",
+            "enum": [
+              "devices"
+            ]
+          },
+          "title": {
+            "title": "The title of the group of persons",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 70 letters string of UTF-8. https://docs.reindeer.tech/index.html#s-actor-persons",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "description": {
+            "title": "The description of the actor",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. https://docs.reindeer.tech/index.html#s-actor-persons",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "num": {
+            "title": "Number of devices",
+            "description": "REQUIRED. The number of devices.",
+            "type": "integer",
+            "minimum": 1
+          },
+          "sourceIdentification": {
+            "title": "IP, Domain or the other identification",
+            "description": "REQUIRED. Whether specific IP address range or domains is assigned or not. If true, identificationGroup property is required. https://docs.reindeer.tech/index.html#s-actor-persons",
+            "type": "boolean"
+          },
+          "identificationGroup": {
+            "title": "The group name of IP address range, domains and so on.",
+            "description": "The group name of IP address range, domains and so on. Required when sourceIdentification propery is true. And MUST NOT use when sourceIdentification propery is false. https://docs.reindeer.tech/index.html#s-actor-persons",
+            "type": "string",
+            "$ref": "https://reindeer.tech/adl-schema/v3/ip.json"
+          },
+          "_meta": {
+            "title": "Provenance metadata",
+            "description": "OPTIONAL. Authorship and confidence metadata. Absent implies AI-defined with full confidence.",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          }
+        },
+        "dependencies": {
+          "identificationGroup": {
+            "properties": {
+              "sourceIdentification": {
+                "enum": [
+                  true
+                ]
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ]
+}
