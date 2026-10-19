@@ -1,0 +1,1890 @@
+{
+  "validate": true,
+  "schemas": [
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/core-schema.json",
+      "fileMatch": [
+        "https://reindeer.tech/adl-schema/default.json"
+      ],
+      "schema": {
+        "title": "ADL Object",
+        "description": "これはADLのルートオブジェクトです。 https://docs.reindeer.tech/index_ja.html#s-clouddesign",
+        "type": "object",
+        "required": [
+          "reindeer",
+          "self",
+          "info",
+          "actors",
+          "resources",
+          "useCases"
+        ],
+        "properties": {
+          "reindeer": {
+            "title": "ADLのバージョン",
+            "description": "必須. この文字列はADLのsemantic version numberでなければなりません。 reindeerフィールドは、ADLドキュメントを解釈するためのツールに使用されるべきです。 これはinfo.versionフィールドとは関係ありません。 https://docs.reindeer.tech/index_ja.html#s-clouddesign",
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+          },
+          "self": {
+            "title": "ファイル名",
+            "description": "必須. この文字列はADLのファイル名です。 拡張子は.json, .yaml または .ymlでなければなりません。 selfフィールドは、ADLを解釈するためのツールに使用されるべきです。 https://docs.reindeer.tech/index_ja.html#s-clouddesign",
+            "type": "string",
+            "default": "adl.json",
+            "pattern": "^[a-zA-Z0-9_.\\-]+\\.(yaml|yml|json)$"
+          },
+          "info": {
+            "title": "Info",
+            "description": "必須. クラウドコンピューティングの活用に関するメタデータを提供します。 メタデータは、必要に応じてツールによって使用される場合があります。 https://docs.reindeer.tech/index_ja.html#s-info",
+            "$ref": "https://reindeer.tech/adl-schema/v3/info.json"
+          },
+          "actors": {
+            "title": "アクター",
+            "description": "必須. アクターオブジェクトの配列です。クラウドコンピューティングに接続する／される外部ユーザーまたはシステムに関する情報を提供します。 https://docs.reindeer.tech/index_ja.html#s-actor",
+            "type": "object",
+            "patternProperties": {
+              "^[0-9a-zA-Z]+$": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "$ref": "https://reindeer.tech/adl-schema/v3/marketTypeOfActor.json"
+                  },
+                  {
+                    "type": "object",
+                    "$ref": "https://reindeer.tech/adl-schema/v3/personsTypeOfActor.json"
+                  },
+                  {
+                    "type": "object",
+                    "$ref": "https://reindeer.tech/adl-schema/v3/externalSystemTypeOfActor.json"
+                  },
+                  {
+                    "type": "object",
+                    "$ref": "https://reindeer.tech/adl-schema/v3/devicesTypeOfActor.json"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "resources": {
+            "title": "リソース",
+            "description": "必須. クラウドコンピューティングの構造を記述する外部ドキュメント（クラウドオートメーション言語が記載されたファイル）への参照を示す、リソースオブジェクトの配列です。 https://docs.reindeer.tech/index_ja.html#s-resource",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "$ref": "https://reindeer.tech/adl-schema/v3/resource.json"
+            },
+            "additionalProperties": false
+          },
+          "useCases": {
+            "title": "ユースケース",
+            "description": "必須. ユースケースオブジェクトの配列です。アクターとクラウドコンピューティングリソースの間で、 特定の目的を達成するための関連性についての情報を提供します。 https://docs.reindeer.tech/index_ja.html#s-usecase",
+            "type": "object",
+            "patternProperties": {
+              "^[0-9a-zA-Z]+$": {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/usecase.json"
+              }
+            },
+            "additionalProperties": false
+          },
+          "components": {
+            "title": "Component objects",
+            "description": "ADLのさまざまな側面に対応する一連の再利用可能な オブジェクトを保持します。 コンポーネントオブジェクト内で定義されたすべてのオブジェクトは、 それらがコンポーネントオブジェクトの外部のプロパティから 明示的に参照されない限り、クラウドデザインには影響しません。 https://docs.reindeer.tech/index_ja.html#s-components",
+            "type": "object",
+            "properties": {
+              "infoTypes": {
+                "title": "Information type objects",
+                "description": "再利用可能なInformation type objectを保持します。 https://docs.reindeer.tech/index_ja.html#s-infoType",
+                "type": "object",
+                "patternProperties": {
+                  "^[0-9a-zA-Z]+$": {
+                    "type": "object",
+                    "$ref": "https://reindeer.tech/adl-schema/v3/infoType.json"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/info.json",
+      "schema": {
+        "title": "Info object",
+        "description": "このオブジェクトはADLに関するメタデータを提供します。 他の人がADLを簡単に検索、発見できるよう、メタデータは適切に記入されるべきです。 https://docs.reindeer.tech/index_ja.html#s-info",
+        "type": "object",
+        "required": [
+          "version",
+          "license",
+          "title",
+          "description",
+          "status",
+          "designedAt",
+          "authors"
+        ],
+        "properties": {
+          "version": {
+            "title": "ADL文書の改訂番号",
+            "description": "必須. この ADL 文書の改訂番号です。1 から始まる整数で、文書を管理するアプリケーションの版管理機構が採番します（保存のたびに 1 ずつ増えます）。著者が手で決める欄ではありません。ADL 仕様そのもののバージョン（reindeer フィールド）とは異なります。 https://docs.reindeer.tech/index_ja.html#s-info",
+            "default": 1,
+            "type": "integer",
+            "minimum": 1
+          },
+          "license": {
+            "title": "ADLのライセンス",
+            "description": "必須. ADLのライセンス情報です。 https://docs.reindeer.tech/index_ja.html#s-license",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/license.json"
+          },
+          "title": {
+            "title": "サービス名",
+            "description": "必須. このクラウドデザインを適用するサービスの名称です。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の70文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-info",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "description": {
+            "title": "サービスの説明",
+            "description": "必須. このクラウドデザインを適用するサービスの説明です。 それはシステムの目的と機能のすべてのキーワードを含む簡潔なメモであるべきです。 このテキストは外部ツールによる検索インデックスとして使われる可能性があります。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の70文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-info",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "status": {
+            "title": "ADLの状態",
+            "description": "必須. ADLの状態です。 以下の値が利用できます。\ndraft: アイデア段階\nprepared: 準備済\ndesigned: 設計済\nreviewed:レビュー済 https://docs.reindeer.tech/index_ja.html#s-info",
+            "type": "string",
+            "enum": [
+              "draft",
+              "prepared",
+              "designed",
+              "reviewed"
+            ]
+          },
+          "designedAt": {
+            "title": "日時",
+            "description": "必須. ADLが作成された日時です。UNIXタイムスタンプ形式を利用する必要があります。 https://docs.reindeer.tech/index_ja.html#s-info",
+            "type": "integer",
+            "minimum": 1
+          },
+          "authors": {
+            "title": "作者",
+            "description": "必須. ADLの作成者です。 この情報は外部ツールによって利用される可能性があり、関係者のスキルや経験を証明する重要な情報となります。 https://docs.reindeer.tech/index_ja.html#s-author",
+            "type": "object",
+            "patternProperties": {
+              "^[0-9a-zA-Z]+$": {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/author.json"
+              }
+            },
+            "additionalProperties": false
+          },
+          "organizations": {
+            "title": "組織",
+            "description": "ADL作成に関与する組織です。 この情報は外部ツールによって利用される可能性があり、組織のスキルや経験を証明する重要な情報となります。 https://docs.reindeer.tech/index_ja.html#s-organization",
+            "type": "object",
+            "patternProperties": {
+              "^[0-9a-zA-Z]+$": {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/organization.json"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/marketTypeOfActor.json",
+      "schema": {
+        "title": "マーケットタイプのアクターオブジェクト",
+        "description": "このオブジェクトは特定のマーケットに属する消費者、観客など、不特定多数の利用者に関する情報を提供します。 システム提供対象となるユーザ数やリクエスト数を把握するため、正しい数値を提供すべきです。 https://docs.reindeer.tech/index_ja.html#s-actor-market",
+        "type": "object",
+        "required": [
+          "type",
+          "title",
+          "description",
+          "market",
+          "marketShare",
+          "sourceIdentification"
+        ],
+        "properties": {
+          "type": {
+            "title": "アクターの種類",
+            "description": "必須. 固定値： 'market' https://docs.reindeer.tech/index_ja.html#s-actor-market",
+            "type": "string",
+            "enum": [
+              "market"
+            ]
+          },
+          "title": {
+            "title": "アクター名",
+            "description": "必須. アクターの名称です。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の70文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-actor-market",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "description": {
+            "title": "アクターの説明",
+            "description": "必須. アクターの説明です。 このテキストは外部ツールによる検索インデックスとして使われる可能性があります。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-actor-market",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "market": {
+            "title": "Market object",
+            "description": "必須. アクターが属する市場に関する情報です。 https://docs.reindeer.tech/index_ja.html#s-market",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/market.json"
+          },
+          "marketShare": {
+            "title": "市場シェア",
+            "description": "必須. 市場シェアを示します。 例えば 0.3 は 30% を意味します。 https://docs.reindeer.tech/index_ja.html#s-actor-market",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "sourceIdentification": {
+            "title": "IP/ドメインなどによる接続元の特定",
+            "description": "必須. 特定のIPアドレス範囲やドメイン名などで識別できるかどうかを意味します。 trueの場合、identificationGroup フィールドは必須です。 https://docs.reindeer.tech/index_ja.html#s-actor-market",
+            "type": "boolean"
+          },
+          "identificationGroup": {
+            "title": "IPアドレス範囲などのグループ名",
+            "description": "IPアドレス範囲やドメイン名など。 sourceIdentification フィールドがtrueの場合は必須です。そして、sourceIdentification がfalseの場合、指定してはいけません。 https://docs.reindeer.tech/index_ja.html#s-actor-market",
+            "type": "string",
+            "$ref": "https://reindeer.tech/adl-schema/v3/ip.json"
+          },
+          "_meta": {
+            "title": "由来メタデータ",
+            "description": "OPTIONAL. 作成者・確信度のメタデータ。省略時は AI が確信度 1.0 で作成したとみなされます。",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          }
+        },
+        "dependencies": {
+          "identificationGroup": {
+            "properties": {
+              "sourceIdentification": {
+                "enum": [
+                  true
+                ]
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/personsTypeOfActor.json",
+      "schema": {
+        "title": "個人タイプのアクターオブジェクト",
+        "description": "このオブジェクトは、運用担当者のような1人または複数の人物で構成されているアクターの種類に関する情報を提供します。 識別可能な個人とクラウドコンピューティングとの制限されたネットワーク接続を設計する際などに、使用べき種類のアクターです。 https://docs.reindeer.tech/index_ja.html#s-actor-persons",
+        "type": "object",
+        "required": [
+          "type",
+          "title",
+          "description",
+          "num",
+          "sourceIdentification"
+        ],
+        "properties": {
+          "type": {
+            "title": "アクターの種類",
+            "description": "必須. 固定値： 'persons' https://docs.reindeer.tech/index_ja.html#s-actor-persons",
+            "type": "string",
+            "enum": [
+              "persons"
+            ]
+          },
+          "title": {
+            "title": "アクター名",
+            "description": "必須. アクターの名称です。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の70文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-actor-persons",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "description": {
+            "title": "アクターの説明",
+            "description": "必須. アクターの説明です。 このテキストは外部ツールによる検索インデックスとして使われる可能性があります。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-actor-persons",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "num": {
+            "title": "人数",
+            "description": "必須. 本アクターを構成する人数です。 https://docs.reindeer.tech/index_ja.html#s-actor-persons",
+            "type": "integer",
+            "minimum": 1
+          },
+          "sourceIdentification": {
+            "title": "IP/ドメインなどによる接続元の特定",
+            "description": "必須. 特定のIPアドレス範囲やドメイン名などで識別できるかどうかを意味します。 trueの場合、identificationGroup フィールドは必須です。 https://docs.reindeer.tech/index_ja.html#s-actor-persons",
+            "type": "boolean"
+          },
+          "identificationGroup": {
+            "title": "IPアドレス範囲などのグループ名",
+            "description": "IPアドレス範囲やドメイン名など。 sourceIdentification フィールドがtrueの場合は必須です。そして、sourceIdentification がfalseの場合、指定してはいけません。 https://docs.reindeer.tech/index_ja.html#s-actor-persons",
+            "type": "string",
+            "$ref": "https://reindeer.tech/adl-schema/v3/ip.json"
+          },
+          "_meta": {
+            "title": "由来メタデータ",
+            "description": "OPTIONAL. 作成者・確信度のメタデータ。省略時は AI が確信度 1.0 で作成したとみなされます。",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          }
+        },
+        "dependencies": {
+          "identificationGroup": {
+            "properties": {
+              "sourceIdentification": {
+                "enum": [
+                  true
+                ]
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/externalSystemTypeOfActor.json",
+      "schema": {
+        "title": "外部システムタイプのアクターオブジェクト",
+        "description": "このオブジェクトは外部システムのAPIやファイルインターフェイスなど、1つまたはいくつかのシステムで構成される種類のアクターに関する情報を提供します。 識別可能な外部システムとクラウドコンピューティングとの制限されたネットワーク接続を設計する際などに、使用べき種類のアクターです。 https://docs.reindeer.tech/index_ja.html#s-actor-system",
+        "type": "object",
+        "required": [
+          "type",
+          "title",
+          "description",
+          "sourceIdentification"
+        ],
+        "properties": {
+          "type": {
+            "title": "アクターの種類",
+            "description": "必須. 固定値： 'externalSystem' https://docs.reindeer.tech/index_ja.html#s-actor-system",
+            "type": "string",
+            "enum": [
+              "externalSystem"
+            ]
+          },
+          "title": {
+            "title": "アクターの名前",
+            "description": "必須. アクターの名称です。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の70文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-actor-system",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "description": {
+            "title": "アクターの説明",
+            "description": "必須. アクターの説明です。 このテキストは外部ツールによる検索インデックスとして使われる可能性があります。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-actor-system",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "sourceIdentification": {
+            "title": "IP/ドメインなどによる接続元の特定",
+            "description": "必須. 特定のIPアドレス範囲やドメイン名などで識別できるかどうかを意味します。 trueの場合、identificationGroup フィールドは必須です。 https://docs.reindeer.tech/index_ja.html#s-actor-system",
+            "type": "boolean"
+          },
+          "identificationGroup": {
+            "title": "IPアドレス範囲などのグループ名",
+            "description": "IPアドレス範囲やドメイン名など。 sourceIdentification フィールドがtrueの場合は必須です。そして、sourceIdentification がfalseの場合、指定してはいけません。 https://docs.reindeer.tech/index_ja.html#s-actor-system",
+            "type": "string",
+            "$ref": "https://reindeer.tech/adl-schema/v3/ip.json"
+          },
+          "_meta": {
+            "title": "由来メタデータ",
+            "description": "OPTIONAL. 作成者・確信度のメタデータ。省略時は AI が確信度 1.0 で作成したとみなされます。",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          }
+        },
+        "dependencies": {
+          "identificationGroup": {
+            "properties": {
+              "sourceIdentification": {
+                "enum": [
+                  true
+                ]
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/resource.json",
+      "schema": {
+        "title": "Resource object",
+        "description": "このオブジェクトは、利用するクラウドコンピューティングリソースに関する情報を提供します。 JSONまたはYAML、HCLでフォーマットされた外部ファイルに対する参照でなければなりません。 そして、以下のようなクラウド自動化ツールのために、整形されたデータであるべきです。\nAWS CloudFormation\nAzure Resource Manager\nGoogle Cloud Deployment Manager\nAlibaba Cloud\nResource Orchestration Service\nTerraform https://docs.reindeer.tech/index_ja.html#s-resource",
+        "type": "object",
+        "required": [
+          "type",
+          "$ref"
+        ],
+        "properties": {
+          "type": {
+            "title": "言語種類",
+            "description": "必須. クラウドオートメーション言語の種別です。以下値の中の１つである必要があります。\nacf : AWS CloudFormation. \narm : Azure Resource Manager.\ngdm : Google Cloud Deployment Manager.\naro : Alibaba Cloud Resource Orchestration Service. \ntfm: Terraform. \nslf: ServerlessFramework. \noth : その他 https://docs.reindeer.tech/index_ja.html#s-resource",
+            "type": "string",
+            "enum": [
+              "acf",
+              "arm",
+              "gdm",
+              "aro",
+              "tfm",
+              "slf",
+              "oth"
+            ]
+          },
+          "$ref": {
+            "title": "参照",
+            "description": "必須. クラウドオートメーション言語で記述されたファイルへの参照で、Reference objectの$refアイテムと同じです。 .json, .yaml, .ymlまたは .tf そしてその拡張子は、外部ツールによってリンク先のファイルフォーマットを検出するために利用されるべきものです。 https://docs.reindeer.tech/index_ja.html#s-ref",
+            "type": "string",
+            "default": "externalFile.json",
+            "pattern": "^[a-zA-Z0-9_.\\-]+\\.(yaml|yml|json|tf)$"
+          },
+          "_meta": {
+            "title": "由来メタデータ",
+            "description": "OPTIONAL. 作成者・確信度のメタデータ。省略時は AI が確信度 1.0 で作成したとみなされます。",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/usecase.json",
+      "schema": {
+        "title": "ユースケースオブジェクト",
+        "description": "このオブジェクトは、特定の機能を実行する目的でいくつかのアクターとリソースを関連付けることにより、 システムのユースケースに関する情報を提供します。 それはADLを正しく設計、監査するために、包括的に記述されるべきです。 https://docs.reindeer.tech/index_ja.html#s-usecase",
+        "type": "object",
+        "required": [
+          "title",
+          "description",
+          "trigger",
+          "traffics"
+        ],
+        "properties": {
+          "title": {
+            "title": "ユースケースの名称",
+            "description": "必須. ユースケースの名称です。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の70文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-usecase",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "description": {
+            "title": "ユースケースの説明",
+            "description": "必須. ユースケースの説明です。 このテキストは外部ツールによる検索インデックスとして使われる可能性があります。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-usecase",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "trigger": {
+            "title": "ユースケースの開始点",
+            "description": "必須. トリガーオブジェクトを指定します。トリガーはこのユースケースの開始イベントを意味します。 https://docs.reindeer.tech/index_ja.html#s-trigger",
+            "type": "object",
+            "oneOf": [
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/sessionAccessTypeOfTrigger.json"
+              },
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/messageAccessTypeOfTrigger.json"
+              },
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/streamAccessTypeOfTrigger.json"
+              },
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/timedActionTypeOfTrigger.json"
+              },
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/stateActionTypeOfTrigger.json"
+              }
+            ]
+          },
+          "traffics": {
+            "title": "ユースケース内の通信",
+            "description": "必須. トラフィックオブジェクトを格納します。各トラフィックはトラフィックオブジェクトを指定します。 トラフィックはユースケース内の通信経路を意味します。 https://docs.reindeer.tech/index_ja.html#s-traffic",
+            "oneOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "array"
+              }
+            ],
+            "patternProperties": {
+              "^[0-9a-zA-Z]+$": {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/passThroughRatioTypeOfTraffic.json"
+              }
+            },
+            "additionalProperties": false
+          },
+          "maxPerformanceDurationRatio": {
+            "title": "最大性能の月間持続時間比率",
+            "description": "ユースケースに求められるコストを計算する際、本値を利用してtriggerやtrafficsに含まれる各Range values objectのmaxとmin値を合成します。 例えば月間3日だけ広告効果でDAUを向上させる設計の場合、DAU値をmin:0.01, max:0.1、本値を0.1と表現します。 CloudDesignは月間使用量を基準に性能とコストを表現しますが、本値により月間平均は1rpsながらも瞬間最大性能100rpsを期待する設計が記録できます。 https://docs.reindeer.tech/index_ja.html#s-usecase",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/license.json",
+      "schema": {
+        "title": "ライセンス",
+        "description": "ADLのライセンス情報です。 https://docs.reindeer.tech/index_ja.html#s-license",
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "if": {
+          "properties": {
+            "type": {
+              "enum": [
+                "Closed",
+                "OtherOpen"
+              ]
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "provider"
+          ]
+        },
+        "properties": {
+          "type": {
+            "title": "ADLのライセンス種別",
+            "description": "必須. ADLのライセンス種別です。以下何れかの値である必要があります。(CC0推奨): CC0 Apache-2.0 MIT BSD-2-Clause OtherOpen Closed https://docs.reindeer.tech/index_ja.html#s-license",
+            "type": "string",
+            "default": "CC0",
+            "enum": [
+              "CC0",
+              "Apache-2.0",
+              "MIT",
+              "BSD-2-Clause",
+              "OtherOpen",
+              "Closed"
+            ]
+          },
+          "provider": {
+            "title": "ライセンスの提供者、またはその名称",
+            "description": "ライセンスの提供者、またはその名称です。typeがOtherOpenまたはClosedの場合以外は記載してはいけません。 https://docs.reindeer.tech/index_ja.html#s-license",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/author.json",
+      "schema": {
+        "title": "Author object",
+        "description": "このオブジェクトは、ADLの作者とその役割についての情報を提供します。 対象のシステム、クラウドコンピューティング技術、そして同システムのサービス提供市場について正しい知識を持っている人を 他の人が見つけるのを助けるため、包括的に記載されるべきです。 https://docs.reindeer.tech/index_ja.html#s-author",
+        "type": "object",
+        "required": [
+          "roles",
+          "joinedAt"
+        ],
+        "properties": {
+          "roles": {
+            "title": "作者の役割",
+            "description": "必須. ADLに関与した役割を保持します。役割は、以下の何れかの値でなければなりません。\nplanner: 企画者\ndesigner: 設計者\nauditor: ADLの監査者\noperator: ADLで設計されたシステムの運用者\nothers: その他 https://docs.reindeer.tech/index_ja.html#s-author",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "planner",
+                "designer",
+                "auditor",
+                "operator",
+                "others"
+              ]
+            }
+          },
+          "joinedAt": {
+            "title": "参画日時",
+            "description": "必須. 作者が本ADLに関与しはじめた日時です。UNIXTIME形式で記載されねばなりません。 https://docs.reindeer.tech/index_ja.html#s-author",
+            "type": "integer",
+            "minimum": 1
+          },
+          "leavedAt": {
+            "title": "離任日時",
+            "description": "必須. 作者が本ADLの作成、運用から離任した日時です。UNIXTIME形式で記載されねばなりません。 https://docs.reindeer.tech/index_ja.html#s-author",
+            "type": "integer",
+            "minimum": 1
+          },
+          "sign": {
+            "title": "署名",
+            "description": "作者の署名です。本値は署名支援ツールによって自動生成されるべきもので、通常は空白です。 https://docs.reindeer.tech/index_ja.html#s-author",
+            "type": "string",
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/organization.json",
+      "schema": {
+        "title": "Organization object",
+        "description": "このオブジェクトは、ADLの関連組織とその役割についての情報を提供します。 対象のシステム、クラウドコンピューティング技術、そして同システムのサービス提供市場について正しい知識を持っている組織を 他の人が見つけるのを助けるため、包括的に記載されるべきです。 https://docs.reindeer.tech/index_ja.html#s-organization",
+        "type": "object",
+        "required": [
+          "joinedAt"
+        ],
+        "properties": {
+          "joinedAt": {
+            "title": "参画日時",
+            "description": "必須. 組織が本ADLに関与しはじめた日時です。UNIXTIME形式で記載されねばなりません。 https://docs.reindeer.tech/index_ja.html#s-organization",
+            "type": "integer",
+            "minimum": 1
+          },
+          "leavedAt": {
+            "title": "離任日時",
+            "description": "必須. 組織が本ADLの作成、運用から離任した日時です。UNIXTIME形式で記載されねばなりません。 https://docs.reindeer.tech/index_ja.html#s-organization",
+            "type": "integer",
+            "minimum": 1
+          },
+          "sign": {
+            "title": "署名",
+            "description": "組織の署名です。本値は署名支援ツールによって自動生成されるべきもので、通常は空白です。 https://docs.reindeer.tech/index_ja.html#s-organization",
+            "type": "string",
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/market.json",
+      "schema": {
+        "title": "マーケットオブジェクト",
+        "description": "マーケットに関する情報を提供します。あなた自身、または第三者の調査結果を内包する可能性があります。 https://docs.reindeer.tech/index_ja.html#s-market",
+        "type": "object",
+        "required": [
+          "title",
+          "description",
+          "num",
+          "estimatedBy",
+          "estimatedAt"
+        ],
+        "properties": {
+          "title": {
+            "title": "マーケットの名前",
+            "description": "必須. マーケットの名称です。 会員の特性、興味、推定年などを説明する言葉を含めることにより、このADL上でユニークであるべきです。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の70文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-market",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "description": {
+            "title": "マーケットの説明",
+            "description": "必須. マーケットの説明です。 それは詳細な算定者や算定目的などを説明する言葉を含むべきです。この説明は、設計者がこの情報を他のデザインで再利用できるかどうかを判断するのに役立ちます。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-market",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "num": {
+            "title": "人数",
+            "description": "必須. 構成メンバーの数です。 https://docs.reindeer.tech/index_ja.html#s-market",
+            "type": "integer",
+            "minimum": 1
+          },
+          "estimatedBy": {
+            "title": "算定者名",
+            "description": "必須. 算定者の名称です。 https://docs.reindeer.tech/index_ja.html#s-market",
+            "type": "string"
+          },
+          "estimatedAt": {
+            "title": "算定日時",
+            "description": "必須. 算定された日時です。UNIXTIME形式で記載されねばなりません。 https://docs.reindeer.tech/index_ja.html#s-market",
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/infoType.json",
+      "schema": {
+        "title": "情報種別",
+        "description": "情報の種類と必要なセキュリティレベルを表します。 本オブジェクトにより、取り扱う情報タイプを定義し、クラウドコンピューティングリソースで 受信、保存、処理される情報を分類すべきです。 https://docs.reindeer.tech/index_ja.html#s-infoType",
+        "type": "object",
+        "required": [
+          "title",
+          "description",
+          "confidential",
+          "privacy",
+          "definedBy",
+          "definedAt"
+        ],
+        "properties": {
+          "title": {
+            "title": "名称",
+            "description": "必須. 情報種別の名称です。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の70文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-infoType",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "description": {
+            "title": "説明",
+            "description": "必須. 情報種別の名称です。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-infoType",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "confidential": {
+            "title": "機密フラグ",
+            "description": "必須. 機密情報か否かを定義します。 https://docs.reindeer.tech/index_ja.html#s-infoType",
+            "type": "boolean"
+          },
+          "privacy": {
+            "title": "個人情報フラグ",
+            "description": "必須. プライバシー情報を含むか否かを定義します。法的に守られるべき情報の存在を意味します。 https://docs.reindeer.tech/index_ja.html#s-infoType",
+            "type": "boolean"
+          },
+          "definedBy": {
+            "title": "作成者",
+            "description": "必須. 作成者です。 https://docs.reindeer.tech/index_ja.html#s-infoType",
+            "type": "string"
+          },
+          "definedAt": {
+            "title": "作成日",
+            "description": "必須. 作成日です。UNIXTIME形式で記述されなければなりません。 https://docs.reindeer.tech/index_ja.html#s-infoType",
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/title.json",
+      "schema": {
+        "type": "object",
+        "patternProperties": {
+          "^[a-z]{2}$": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 70
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/description.json",
+      "schema": {
+        "type": "object",
+        "patternProperties": {
+          "^[a-z]{2}$": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/ip.json",
+      "schema": {
+        "type": "string",
+        "pattern": "^[a-zA-Z0-9_.\\-]+$"
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/refToActor.json",
+      "schema": {
+        "title": "参照",
+        "description": "ADLの様々なフィールドからADLやクラウドオートメーションツール用ファイル内のjson/yamlオブジェクトを 参照する際に利用する参照先指定オブジェクトです。参照オブジェクトはJSON参照によって定義されており、 同じ構造、動作、および規則に従います。 この仕様では、参照の解決はJSONスキーマ仕様ではなく JSON参照仕様で定義されているとおりに行われます。 https://docs.reindeer.tech/index_ja.html#s-ref",
+        "type": "object",
+        "required": [
+          "$ref"
+        ],
+        "properties": {
+          "$ref": {
+            "title": "参照",
+            "description": "必須. Reference strings. 同一ファイルの場合は#/で始まる形で参照を記述し、必ずルートオブジェクトからのパスを記述します。 また外部ファイルを指定するときは、必ず拡張子.json、.yaml、または.ymlを付けたファイル名から参照を記述し、 #/以降は同一ファイルの場合と同様に記述します。 https://docs.reindeer.tech/index_ja.html#s-ref",
+            "type": "string",
+            "pattern": "^#/actors/[a-zA-Z0-9]+$"
+          }
+        }
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/refToResources.json",
+      "schema": {
+        "title": "参照",
+        "description": "ADLの様々なフィールドからADLやクラウドオートメーションツール用ファイル内のjson/yamlオブジェクトを 参照する際に利用する参照先指定オブジェクトです。参照オブジェクトはJSON参照によって定義されており、 同じ構造、動作、および規則に従います。 この仕様では、参照の解決はJSONスキーマ仕様ではなく JSON参照仕様で定義されているとおりに行われます。 https://docs.reindeer.tech/index_ja.html#s-ref",
+        "type": "object",
+        "required": [
+          "$ref"
+        ],
+        "properties": {
+          "$ref": {
+            "title": "参照",
+            "description": "必須. プロビジョニングファイルへの参照のみ有効です。形式: <file>.<ext>#/<section>/<RealKey>。ADL内部参照（#/で始まる形式）は使用できません。 https://docs.reindeer.tech/index_ja.html#s-ref",
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_\\-\\.\\/]*\\.(yaml|yml|json|tf)#/.+$"
+          }
+        }
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/refToTrigger.json",
+      "schema": {
+        "title": "参照",
+        "description": "ADLの様々なフィールドからADLやクラウドオートメーションツール用ファイル内のjson/yamlオブジェクトを 参照する際に利用する参照先指定オブジェクトです。参照オブジェクトはJSON参照によって定義されており、 同じ構造、動作、および規則に従います。 この仕様では、参照の解決はJSONスキーマ仕様ではなく JSON参照仕様で定義されているとおりに行われます。 https://docs.reindeer.tech/index_ja.html#s-ref",
+        "type": "object",
+        "required": [
+          "$ref"
+        ],
+        "properties": {
+          "$ref": {
+            "title": "参照",
+            "description": "必須. Reference strings. 同一ファイルの場合は#/で始まる形で参照を記述し、必ずルートオブジェクトからのパスを記述します。 また外部ファイルを指定するときは、必ず拡張子.json、.yaml、または.ymlを付けたファイル名から参照を記述し、 #/以降は同一ファイルの場合と同様に記述します。 https://docs.reindeer.tech/index_ja.html#s-ref",
+            "type": "string",
+            "pattern": "^#/useCases/[a-zA-Z0-9]+/trigger$"
+          }
+        }
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/refToTraffic.json",
+      "schema": {
+        "title": "参照",
+        "description": "ADLの様々なフィールドからADLやクラウドオートメーションツール用ファイル内のjson/yamlオブジェクトを 参照する際に利用する参照先指定オブジェクトです。参照オブジェクトはJSON参照によって定義されており、 同じ構造、動作、および規則に従います。 この仕様では、参照の解決はJSONスキーマ仕様ではなく JSON参照仕様で定義されているとおりに行われます。 https://docs.reindeer.tech/index_ja.html#s-ref",
+        "type": "object",
+        "required": [
+          "$ref"
+        ],
+        "properties": {
+          "$ref": {
+            "title": "参照",
+            "description": "必須. Reference strings. 同一ファイルの場合は#/で始まる形で参照を記述し、必ずルートオブジェクトからのパスを記述します。 また外部ファイルを指定するときは、必ず拡張子.json、.yaml、または.ymlを付けたファイル名から参照を記述し、 #/以降は同一ファイルの場合と同様に記述します。 https://docs.reindeer.tech/index_ja.html#s-ref",
+            "type": "string",
+            "pattern": "^#/useCases/[a-zA-Z0-9]+/traffics/[a-zA-Z0-9]+$"
+          }
+        }
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/refToInfoType.json",
+      "schema": {
+        "title": "参照",
+        "description": "ADLの様々なフィールドからADLやクラウドオートメーションツール用ファイル内のjson/yamlオブジェクトを 参照する際に利用する参照先指定オブジェクトです。参照オブジェクトはJSON参照によって定義されており、 同じ構造、動作、および規則に従います。 この仕様では、参照の解決はJSONスキーマ仕様ではなく JSON参照仕様で定義されているとおりに行われます。 https://docs.reindeer.tech/index_ja.html#s-ref",
+        "type": "object",
+        "required": [
+          "$ref"
+        ],
+        "properties": {
+          "$ref": {
+            "title": "参照",
+            "description": "必須. ADL 内部の #/components/infoTypes/<key> のみ有効です。外部ファイル参照は使用できません。 https://docs.reindeer.tech/index_ja.html#s-ref",
+            "type": "string",
+            "pattern": "^#/components/infoTypes/[a-zA-Z0-9]+$"
+          }
+        }
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/timedActionTypeOfTrigger.json",
+      "schema": {
+        "title": "時限アクションタイプのトリガーオブジェクト",
+        "description": "これはアクターまたはコンピューティングリソースによって発動されるタイプのトリガーです。 アクターまたはcloud computingリソースからの時限アクションを表現します。 https://docs.reindeer.tech/index_ja.html#s-trigger-timedAction",
+        "type": "object",
+        "required": [
+          "type",
+          "description",
+          "infoType",
+          "ports",
+          "internet",
+          "restriction",
+          "onlineRps",
+          "reqMonth",
+          "kbRequest",
+          "kbResponse",
+          "start",
+          "end",
+          "endpointTitle",
+          "storedRatio"
+        ],
+        "properties": {
+          "type": {
+            "title": "トリガーの種類",
+            "description": "必須. 固定値： 'timedAction'. https://docs.reindeer.tech/index_ja.html#s-trigger-timedAction",
+            "type": "string",
+            "enum": [
+              "timedAction"
+            ]
+          },
+          "description": {
+            "title": "トリガーの説明",
+            "description": "必須. トリガーの説明です。トリガーの目的を端的に示すメモであるべきです。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-timedAction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "infoType": {
+            "title": "情報の種別",
+            "description": "必須. InfoType objectに対する参照です。このトリガーが扱う情報の種別を定義します。 https://docs.reindeer.tech/index_ja.html#s-infoType",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "ports": {
+            "title": "ポート番号",
+            "description": "必須. このトリガーのエンドポイント（endフィールドで定義）が利用するポート番号です。 https://docs.reindeer.tech/index_ja.html#s-trigger-timedAction",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "internet": {
+            "title": "インターネット通信",
+            "description": "必須. この接続がインターネット経由か否かを示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-timedAction",
+            "type": "boolean"
+          },
+          "restriction": {
+            "title": "通信制限",
+            "description": "必須. このトリガーのエンドポイントにおける、接続元IP、ドメインなどの接続制限の有無を示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-timedAction",
+            "type": "boolean"
+          },
+          "onlineRps": {
+            "title": "秒間リクエスト",
+            "description": "必須. このトリガーが発火した時の、1秒当たりの要求数。 開始点（startフィールド）からエンドポイント（endフィールド）に 対するリクエストの要求性能を明示します。 たとえば、毎週月曜日の朝にバッチシステムが動作し、各バッチが1秒間に2回のスループットで外部APIにアクセスする場合は2.0です。 https://docs.reindeer.tech/index_ja.html#s-trigger-timedAction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "reqMonth": {
+            "title": "月間リクエスト",
+            "description": "必須. 開始点からエンドポイントへの月間リクエスト数です。 たとえば、バッチシステムが毎月1000人に3回メールマガジンを送信する場合、この値は3000になります。 https://docs.reindeer.tech/index_ja.html#s-trigger-timedAction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbRequest": {
+            "title": "リクエストサイズ (KB)",
+            "description": "必須. 開始点からエンドポイントに対するリクエストあたりのデータサイズをKB単位で明示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-timedAction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbResponse": {
+            "title": "レスポンスサイズ (KB)",
+            "description": "必須. 開始点からエンドポイントへのリクエスト毎に生じるレスポンスのデータサイズをKB単位で明示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-timedAction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "start": {
+            "title": "トリガーの開始点",
+            "description": "必須. トリガーの開始点です。resource object への参照でなければなりません（決まった時刻に処理を始めるスケジューラや、状態の変化を知らせるリソース）。 https://docs.reindeer.tech/index_ja.html#s-trigger-timedAction",
+            "oneOf": [
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/refToResources.json"
+              }
+            ]
+          },
+          "end": {
+            "title": "トリガーのエンドポイント",
+            "description": "必須. トリガーのエンドポイントを示します。 resource object または actor objectへの参照でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-timedAction",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "$ref": "https://reindeer.tech/adl-schema/v3/refToActor.json"
+                },
+                {
+                  "type": "object",
+                  "$ref": "https://reindeer.tech/adl-schema/v3/refToResources.json"
+                }
+              ]
+            }
+          },
+          "endpointTitle": {
+            "title": "エンドポイントの名称",
+            "description": "必須. エンドポイントの名称です。キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の70文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-timedAction",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "storedRatio": {
+            "title": "データの保管率",
+            "description": "必須. endが受信したデータのうち、endに保管されるデータサイズの比率を示します。 例えば、このトリガーでアクターがendに送信するデータの全てをend上で保管する場合、この値は1.0になります。データを 保管しない場合は0です。 https://docs.reindeer.tech/index_ja.html#s-trigger-timedAction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "storedInfoType": {
+            "title": "保管するデータの種類",
+            "description": "InfoType objectへの参照です。このトリガーのendが保管するデータの種類を示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-timedAction",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "storageDescription": {
+            "title": "保管データの目的",
+            "description": "ストレージの説明です。 このテキストは外部ツールによる検索インデックスとして使われる可能性があり、ストレージの目的を的確に表現すべきです。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-timedAction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "_meta": {
+            "title": "由来メタデータ",
+            "description": "OPTIONAL. 作成者・確信度のメタデータ。省略時は AI が確信度 1.0 で作成したとみなされます。",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          },
+          "protocol": {
+            "title": "プロトコル",
+            "description": "任意. 受け口のプロトコルです。例: https, http3, websocket, grpc, smtp, sms, sip, mqtt, amqp, sftp, rtmp, webrtc, udp, tcp, rdp, ssh。一覧に無い値も使えます。 https://docs.reindeer.tech/index_ja.html#s-trigger-protocol",
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9.+-]*$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/passThroughRatioTypeOfTraffic.json",
+      "schema": {
+        "title": "パススルー比率タイプのトラフィックオブジェクト",
+        "description": "これはトラフィックオブジェクトの一種です。開始点が受信したリクエストの一部を後続のリソースに受け渡すという形で発生する通信を表現できます。 例えばロードバランサが受けたリクエストをWebサーバに送信する、アプリケーションが受けたリクエストにもとづいてメール配信キューを生成するといった通信の連鎖が表現できます。 その際、本トラフィックのエンドポイント(endフィールド)が受信するデータサイズは、本トラフィックの前段の通信（sourceフィールド）が 受信したリクエストの何パーセントにあたるかといった表現方法になります。したがって、前段の通信が1MBのPOST値を受け取った後にサーバ内で3MBにデータを拡張して 本トラフィックのエンドポイントに受け渡すといった場合には、データサイズは300%になる（passThroughReqRatio>フィールドが3）と表現できます。 https://docs.reindeer.tech/index_ja.html#s-traffic",
+        "type": "object",
+        "required": [
+          "type",
+          "description",
+          "infoType",
+          "ports",
+          "internet",
+          "restriction",
+          "source",
+          "end",
+          "passThroughReqRatio",
+          "compositResRatio",
+          "endpointTitle",
+          "storedRatio"
+        ],
+        "properties": {
+          "type": {
+            "title": "トラフィックの種類",
+            "description": "必須. 固定値： 'passThroughRatio'. https://docs.reindeer.tech/index_ja.html#s-traffic",
+            "type": "string",
+            "enum": [
+              "passThroughRatio"
+            ]
+          },
+          "description": {
+            "title": "トラフィックの説明",
+            "description": "必須. トラフィックの説明です。 このテキストは外部ツールによる検索インデックスとして使われる可能性があります。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-traffic",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "infoType": {
+            "title": "情報の種類",
+            "description": "必須. InfoType objectへの参照です。 トラフィックが扱う情報の種類を明示します。　https://docs.reindeer.tech/index_ja.html#s-infoType",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "ports": {
+            "title": "ポート番号",
+            "description": "必須. トラフィックのエンドポイントが利用するポート番号です。 https://docs.reindeer.tech/index_ja.html#s-traffic-passThroughRatio",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "internet": {
+            "title": "インターネット利用",
+            "description": "必須. トラフィックがインターネット経由の通信を行うかどうかを明示します。 https://docs.reindeer.tech/index_ja.html#s-traffic-passThroughRatio",
+            "type": "boolean"
+          },
+          "restriction": {
+            "title": "通信制限",
+            "description": "必須. トラフィックのエンドポイントが接続元IP、ドメイン、その他の接続制限をかけているかどうかを明示します。 https://docs.reindeer.tech/index_ja.html#s-traffic-passThroughRatio",
+            "type": "boolean"
+          },
+          "source": {
+            "title": "トラフィックの開始点",
+            "description": "必須. trigger object または traffic objectへの参照です。 このトラフィックの開始点を意味します。 これは、endフィールドに記述されているすべてのリソースまたはアクターオブジェクトに影響を及ぼします。 異なる種類のリソースを直列に繋ぐ場合（例：CloudFront → API Gateway → Lambda）は、複数のtrafficオブジェクトを作成し、各trafficのsourceフィールドに前段のtrafficへの参照を指定することでチェーンを表現します。これが異種リソースの直列接続における規定の記述方法です。 https://docs.reindeer.tech/index_ja.html#s-traffic-passThroughRatio",
+            "type": "object",
+            "oneOf": [
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/refToTrigger.json"
+              },
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/refToTraffic.json"
+              }
+            ]
+          },
+          "end": {
+            "title": "トラフィックのエンドポイント",
+            "description": "必須. このトラフィックのエンドポイントを意味します。 actor objects または resource object内に記述された各リソースへの参照です。 複数のリソースが指定された場合、通信量は各リソースに均等に分割されるものと判断されます。これはオートスケールグループのEC2インスタンス群などの同種リソース群のほか、DBインスタンスとそのパラメータグループのように一体としてプロビジョニングする必要がある密結合リソース群にも適用されます。ただし、列記したリソース同士がチェーン関係にある場合（CloudFront → API Gateway → Lambda のようにトラフィックが順次流れる場合）は、このフィールドにまとめてはなりません（MUST NOT）。各ホップを別々のtrafficオブジェクトとして作成し、sourceフィールドで連結して表現してください。チェーン関係にあるリソースをendにまとめると、直列フローと並列分散が混同され、トラフィック計算が不正確になります。 https://docs.reindeer.tech/index_ja.html#s-traffic-passThroughRatio",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "$ref": "https://reindeer.tech/adl-schema/v3/refToActor.json"
+                },
+                {
+                  "type": "object",
+                  "$ref": "https://reindeer.tech/adl-schema/v3/refToResources.json"
+                }
+              ]
+            }
+          },
+          "passThroughReqRatio": {
+            "title": "リクエスト率",
+            "description": "必須. 前段のトリガーやトラフィック（sourceフィールド）が受信したリクエストのうち、 何パーセントが後続となる本トラフィックのエンドポイント（end）に流入するかを示します。 例えば前段のトリガーがユーザーから100,000/月のリクエストを受信し、50%を自身のキャッシュ、50%を本トラフィックに 送信する場合、この値は0.5となります。 https://docs.reindeer.tech/index_ja.html#s-traffic-passThroughRatio",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "compositResRatio": {
+            "title": "レスポンス構成率",
+            "description": "必須. 前段のトリガーやトラフィック（sourceフィールド）が扱うレスポンスデータのサイズを基準と して、本トラフィックがその何パーセントにあたるサイズのデータを前段のトリガーやトラフィックに返却するかを記述します。 例えば前段のトリガーがユーザーに10GB/月のデータを返却する場合、この値が0.5であれば 本トラフィックから前段のトリガーに対して5GB/月のデータを返却することになります。 https://docs.reindeer.tech/index_ja.html#s-traffic-passThroughRatio",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "endpointTitle": {
+            "title": "エンドポイントの名称",
+            "description": "必須. エンドポイントの名称です。キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の70文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-traffic-passThroughRatio",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "storedRatio": {
+            "title": "データ保管率",
+            "description": "必須. endが受信したデータのうち、endで保管するデータサイズの比率を示します。 例えば、このトラフィックで送信元がendに送信するデータの全てをend上で保管する場合、この値は1.0になります。データを 保管しない場合は0です。 https://docs.reindeer.tech/index_ja.html#s-traffic-passThroughRatio",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "storedInfoType": {
+            "title": "保管データの種類",
+            "description": "InfoType objectへの参照です。このトラフィックのendが保管するデータの種類を示します。 https://docs.reindeer.tech/index_ja.html#s-traffic-passThroughRatio",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "storageDescription": {
+            "title": "データ保管の名前",
+            "description": "ストレージの説明です。 このテキストは外部ツールによる検索インデックスとして使われる可能性があり、ストレージの目的を的確に表現すべきです。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-traffic-passThroughRatio",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "_meta": {
+            "title": "由来メタデータ",
+            "description": "OPTIONAL. 作成者・確信度のメタデータ。省略時は AI が確信度 1.0 で作成したとみなされます。",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/rangeValue.json",
+      "schema": {
+        "title": "データ範囲オブジェクト",
+        "description": "ADLの様々なフィールドで利用される、値範囲を示すオブジェクトです。 https://docs.reindeer.tech/index_ja.html#s-rangeValue",
+        "type": "object",
+        "required": [
+          "max",
+          "min"
+        ],
+        "properties": {
+          "max": {
+            "title": "最大値",
+            "description": "必須. 値範囲の最大値を意味します。",
+            "type": "number",
+            "minimum": 0
+          },
+          "min": {
+            "title": "最小値",
+            "description": "必須. 値範囲の最小値を意味します。",
+            "type": "number",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/meta.json",
+      "schema": {
+        "title": "由来メタデータオブジェクト",
+        "description": "ADL ノード（actor / resource / traffic / trigger）の作成者と確信度を記録する OPTIONAL なオブジェクト。省略時は AI が確信度 1.0 で作成したとみなされる。AI の推論と人間の手修正を区別するために使用される。",
+        "type": "object",
+        "properties": {
+          "d": {
+            "title": "作成者",
+            "description": "OPTIONAL. 作成者を示す識別子。'ai' は AI 生成、'h:<userId>' は人間が定義したことを示す。省略時は 'ai' とみなされる。",
+            "type": "string"
+          },
+          "t": {
+            "title": "作成・更新日時",
+            "description": "OPTIONAL. 'd' で示される作成者によりノードが最後に変更された時刻（epoch 秒）。",
+            "type": "integer",
+            "minimum": 0
+          },
+          "c": {
+            "title": "確信度",
+            "description": "OPTIONAL. AI が生成した値への確信度（0-1）。'd' が 'ai' または省略時のみ意味を持つ。省略時は 1.0 とみなされる。",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/sessionAccessTypeOfTrigger.json",
+      "schema": {
+        "title": "セッションアクセスタイプのトリガーオブジェクト",
+        "description": "アクター（人・市場）が画面や端末を操作し、対話を繰り返すアクセスです（Web・アプリの画面、VDI・RDP・業務端末など）。 https://docs.reindeer.tech/index_ja.html#s-trigger-sessionaccess",
+        "type": "object",
+        "required": [
+          "type",
+          "description",
+          "infoType",
+          "ports",
+          "internet",
+          "restriction",
+          "dau",
+          "pagesVisit",
+          "kbPage",
+          "reqPage",
+          "busyHours",
+          "postsVisit",
+          "kbPost",
+          "start",
+          "end",
+          "endpointTitle",
+          "storedRatio",
+          "protocol"
+        ],
+        "properties": {
+          "type": {
+            "title": "トリガーの種類",
+            "description": "必須. 固定値： 'sessionAccess'. https://docs.reindeer.tech/index_ja.html#s-trigger-sessionaccess",
+            "type": "string",
+            "enum": [
+              "sessionAccess"
+            ]
+          },
+          "description": {
+            "title": "トリガーの説明",
+            "description": "必須. トリガーの説明です。トリガーの目的を端的に示すメモであるべきです。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "infoType": {
+            "title": "情報の種別",
+            "description": "必須. InfoType objectに対する参照です。このトリガーが扱う情報の種別を定義します。 https://docs.reindeer.tech/index_ja.html#s-infoType",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "ports": {
+            "title": "ポート番号",
+            "description": "必須. このトリガーのエンドポイント（endフィールドで定義）が利用するポート番号です。 https://docs.reindeer.tech/index_ja.html#s-trigger-sessionaccess",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "internet": {
+            "title": "インターネット通信",
+            "description": "必須. この接続がインターネット経由か否かを示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-sessionaccess",
+            "type": "boolean"
+          },
+          "restriction": {
+            "title": "通信制限",
+            "description": "必須. このトリガーのエンドポイントにおける、接続元IP、ドメインなどの接続制限の有無を示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-sessionaccess",
+            "type": "boolean"
+          },
+          "dau": {
+            "title": "DAU",
+            "description": "必須. 日間アクティブユーザー率（Dayly Active User)です。例えば１日平均で、このstartフィールドで参照された アクターの1%がこのendフィールドで参照されるリソースにアクセスする場合、それは0.01となります。 https://docs.reindeer.tech/index_ja.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "pagesVisit": {
+            "title": "訪問毎ページ数",
+            "description": "必須. 訪問あたりの平均ページ数です。訪問者が訪問毎にどのくらいのページにアクセスするかを示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbPage": {
+            "title": "ページサイズ(KB)",
+            "description": "必須. 平均ページサイズです。（KB単位） https://docs.reindeer.tech/index_ja.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "reqPage": {
+            "title": "ページ毎リクエスト数",
+            "description": "必須. ページあたりのリクエスト数です。ページあたりにどのくらいのリクエスト数（ページを構成する画像やHTMLなどへのリクエスト）が発生するかを示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "busyHours": {
+            "title": "日間アクセス集中時間",
+            "description": "必須. １日あたりのアクセス集中時間です。例えば日々のアクセスがほぼ AM 9:00 - AM 12:00 と PM 17:00 - PM 20:00 に集中している場合、この値は 6時間 です。 https://docs.reindeer.tech/index_ja.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "postsVisit": {
+            "title": "投稿者率",
+            "description": "必須. 投稿する訪問者の割合を示します。例えば1日あたり、100,000人のアクターがDAU1%の割合で訪問する中で100件の投稿がある場合、この値は0.1となります。 https://docs.reindeer.tech/index_ja.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbPost": {
+            "title": "投稿サイズ (KB)",
+            "description": "必須. 平均投稿データサイズです。（KB単位） https://docs.reindeer.tech/index_ja.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "start": {
+            "title": "トリガーの開始点",
+            "description": "必須. トリガーの開始点です。市場（market）または個人（persons）タイプの actor object への参照でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-sessionaccess",
+            "oneOf": [
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/refToActor.json"
+              }
+            ]
+          },
+          "end": {
+            "title": "トリガーのエンドポイント",
+            "description": "必須. resource objectに記載されたリソースへの参照でなければなりません。このトリガーのエンドポイントを示します。 https://docs.reindeer.tech/index_ja.html#s-resource",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "$ref": "https://reindeer.tech/adl-schema/v3/refToResources.json"
+            }
+          },
+          "endpointTitle": {
+            "title": "エンドポイント名",
+            "description": "必須. エンドポイントの名称です。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の70文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-sessionaccess",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "storedRatio": {
+            "title": "データ保管率",
+            "description": "必須. endが受信したデータのうち、endで保管するデータサイズの比率を示します。 例えば、このトリガーでアクターがendに送信するデータの全てをend上で保管する場合、この値は1.0になります。データを 保管しない場合は0です。 https://docs.reindeer.tech/index_ja.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "storedInfoType": {
+            "title": "保管データの情報種別",
+            "description": "InfoType objectへの参照です。このトリガーのendが保管するデータの種類を示します。 https://docs.reindeer.tech/index_ja.html#s-infoType",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "storageDescription": {
+            "title": "データ保管の目的",
+            "description": "ストレージの説明です。 このテキストは外部ツールによる検索インデックスとして使われる可能性があり、ストレージの目的を的確に表現すべきです。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-sessionaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "_meta": {
+            "title": "由来メタデータ",
+            "description": "OPTIONAL. 作成者・確信度のメタデータ。省略時は AI が確信度 1.0 で作成したとみなされます。",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          },
+          "protocol": {
+            "title": "プロトコル",
+            "description": "必須. 受け口のプロトコルです。例: https, http3, websocket, grpc, smtp, sms, sip, mqtt, amqp, sftp, rtmp, webrtc, udp, tcp, rdp, ssh。一覧に無い値も使えます。 https://docs.reindeer.tech/index_ja.html#s-trigger-protocol",
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9.+-]*$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/messageAccessTypeOfTrigger.json",
+      "schema": {
+        "title": "メッセージアクセスタイプのトリガーオブジェクト",
+        "description": "アクター（人・市場・外部システム・機器）が1件ずつ送り届けるアクセスです（API の呼び出し、webhook、メール、SMS、MQTT、SFTP など）。 https://docs.reindeer.tech/index_ja.html#s-trigger-messageaccess",
+        "type": "object",
+        "required": [
+          "type",
+          "description",
+          "infoType",
+          "ports",
+          "internet",
+          "restriction",
+          "onlineRps",
+          "reqMonth",
+          "kbRequest",
+          "kbResponse",
+          "start",
+          "end",
+          "endpointTitle",
+          "storedRatio",
+          "protocol"
+        ],
+        "properties": {
+          "type": {
+            "title": "トリガーの種類",
+            "description": "必須. 固定値： 'messageAccess'. https://docs.reindeer.tech/index_ja.html#s-trigger-messageaccess",
+            "type": "string",
+            "enum": [
+              "messageAccess"
+            ]
+          },
+          "description": {
+            "title": "トリガーの説明",
+            "description": "必須. トリガーの説明です。トリガーの目的を端的に示すメモであるべきです。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-messageaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "infoType": {
+            "title": "情報の種別",
+            "description": "必須. InfoType objectに対する参照です。このトリガーが扱う情報の種別を定義します。 https://docs.reindeer.tech/index_ja.html#s-infoType",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "ports": {
+            "title": "ポート番号",
+            "description": "必須. このトリガーのエンドポイント（endフィールドで定義）が利用するポート番号です。 https://docs.reindeer.tech/index_ja.html#s-trigger-messageaccess",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "internet": {
+            "title": "インターネット通信",
+            "description": "必須. この接続がインターネット経由か否かを示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-messageaccess",
+            "type": "boolean"
+          },
+          "restriction": {
+            "title": "通信制限",
+            "description": "必須. このトリガーのエンドポイントにおける、接続元IP、ドメインなどの接続制限の有無を示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-messageaccess",
+            "type": "boolean"
+          },
+          "onlineRps": {
+            "title": "秒間リクエスト",
+            "description": "必須. このトリガーが発火した時の、1秒当たりの要求数。 開始点（startフィールド）からエンドポイント（endフィールド）に 対するリクエストの要求性能を明示します。 たとえば、毎週月曜日の朝にバッチシステムが動作し、各バッチが1秒間に2回のスループットで外部APIにアクセスする場合は2.0です。 https://docs.reindeer.tech/index_ja.html#s-trigger-messageaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "reqMonth": {
+            "title": "月間リクエスト",
+            "description": "必須. 開始点からエンドポイントへの月間リクエスト数です。 たとえば、バッチシステムが毎月1000人に3回メールマガジンを送信する場合、この値は3000になります。 https://docs.reindeer.tech/index_ja.html#s-trigger-messageaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbRequest": {
+            "title": "リクエストサイズ (KB)",
+            "description": "必須. 開始点からエンドポイントに対するリクエストあたりのデータサイズをKB単位で明示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-messageaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbResponse": {
+            "title": "レスポンスサイズ (KB)",
+            "description": "必須. 開始点からエンドポイントへのリクエスト毎に生じるレスポンスのデータサイズをKB単位で明示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-messageaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "start": {
+            "title": "トリガーの開始点",
+            "description": "必須. トリガーの開始点です。actor object への参照でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-messageaccess",
+            "oneOf": [
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/refToActor.json"
+              }
+            ]
+          },
+          "end": {
+            "title": "トリガーのエンドポイント",
+            "description": "必須. トリガーのエンドポイントです。resource object への参照でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-messageaccess",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "$ref": "https://reindeer.tech/adl-schema/v3/refToResources.json"
+            }
+          },
+          "endpointTitle": {
+            "title": "エンドポイントの名称",
+            "description": "必須. エンドポイントの名称です。キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の70文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-messageaccess",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "storedRatio": {
+            "title": "データの保管率",
+            "description": "必須. endが受信したデータのうち、endに保管されるデータサイズの比率を示します。 例えば、このトリガーでアクターがendに送信するデータの全てをend上で保管する場合、この値は1.0になります。データを 保管しない場合は0です。 https://docs.reindeer.tech/index_ja.html#s-trigger-messageaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "storedInfoType": {
+            "title": "保管するデータの種類",
+            "description": "InfoType objectへの参照です。このトリガーのendが保管するデータの種類を示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-messageaccess",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "storageDescription": {
+            "title": "保管データの目的",
+            "description": "ストレージの説明です。 このテキストは外部ツールによる検索インデックスとして使われる可能性があり、ストレージの目的を的確に表現すべきです。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-messageaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "_meta": {
+            "title": "由来メタデータ",
+            "description": "OPTIONAL. 作成者・確信度のメタデータ。省略時は AI が確信度 1.0 で作成したとみなされます。",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          },
+          "protocol": {
+            "title": "プロトコル",
+            "description": "必須. 受け口のプロトコルです。例: https, http3, websocket, grpc, smtp, sms, sip, mqtt, amqp, sftp, rtmp, webrtc, udp, tcp, rdp, ssh。一覧に無い値も使えます。 https://docs.reindeer.tech/index_ja.html#s-trigger-protocol",
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9.+-]*$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/streamAccessTypeOfTrigger.json",
+      "schema": {
+        "title": "ストリームアクセスタイプのトリガーオブジェクト",
+        "description": "アクターが接続を保ったまま通信するアクセスです（電話、動画の取り込み、WebSocket、ゲーム、DB への直接の接続など）。 https://docs.reindeer.tech/index_ja.html#s-trigger-streamaccess",
+        "type": "object",
+        "required": [
+          "type",
+          "description",
+          "infoType",
+          "ports",
+          "internet",
+          "restriction",
+          "start",
+          "end",
+          "endpointTitle",
+          "storedRatio",
+          "concurrentConnections",
+          "hoursDay",
+          "kbpsUp",
+          "kbpsDown",
+          "protocol"
+        ],
+        "properties": {
+          "type": {
+            "title": "トリガーの種類",
+            "description": "必須. 固定値： 'streamAccess'. https://docs.reindeer.tech/index_ja.html#s-trigger-streamaccess",
+            "type": "string",
+            "enum": [
+              "streamAccess"
+            ]
+          },
+          "description": {
+            "title": "トリガーの説明",
+            "description": "必須. トリガーの説明です。トリガーの目的を端的に示すメモであるべきです。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-streamaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "infoType": {
+            "title": "情報の種別",
+            "description": "必須. InfoType objectに対する参照です。このトリガーが扱う情報の種別を定義します。 https://docs.reindeer.tech/index_ja.html#s-infoType",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "ports": {
+            "title": "ポート番号",
+            "description": "必須. このトリガーのエンドポイント（endフィールドで定義）が利用するポート番号です。 https://docs.reindeer.tech/index_ja.html#s-trigger-streamaccess",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "internet": {
+            "title": "インターネット通信",
+            "description": "必須. この接続がインターネット経由か否かを示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-streamaccess",
+            "type": "boolean"
+          },
+          "restriction": {
+            "title": "通信制限",
+            "description": "必須. このトリガーのエンドポイントにおける、接続元IP、ドメインなどの接続制限の有無を示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-streamaccess",
+            "type": "boolean"
+          },
+          "start": {
+            "title": "トリガーの開始点",
+            "description": "必須. トリガーの開始点です。actor object への参照でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-streamaccess",
+            "oneOf": [
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/refToActor.json"
+              }
+            ]
+          },
+          "end": {
+            "title": "トリガーのエンドポイント",
+            "description": "必須. トリガーのエンドポイントです。resource object への参照でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-streamaccess",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "$ref": "https://reindeer.tech/adl-schema/v3/refToResources.json"
+            }
+          },
+          "endpointTitle": {
+            "title": "エンドポイントの名称",
+            "description": "必須. エンドポイントの名称です。キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の70文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-streamaccess",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "storedRatio": {
+            "title": "データの保管率",
+            "description": "必須. endが受信したデータのうち、endに保管されるデータサイズの比率を示します。 例えば、このトリガーでアクターがendに送信するデータの全てをend上で保管する場合、この値は1.0になります。データを 保管しない場合は0です。 https://docs.reindeer.tech/index_ja.html#s-trigger-streamaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "storedInfoType": {
+            "title": "保管するデータの種類",
+            "description": "InfoType objectへの参照です。このトリガーのendが保管するデータの種類を示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-streamaccess",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "storageDescription": {
+            "title": "保管データの目的",
+            "description": "ストレージの説明です。 このテキストは外部ツールによる検索インデックスとして使われる可能性があり、ストレージの目的を的確に表現すべきです。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-streamaccess",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "_meta": {
+            "title": "由来メタデータ",
+            "description": "OPTIONAL. 作成者・確信度のメタデータ。省略時は AI が確信度 1.0 で作成したとみなされます。",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          },
+          "concurrentConnections": {
+            "title": "同時接続数",
+            "description": "必須. 同時に保たれる接続の数です。",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "hoursDay": {
+            "title": "1日の接続時間",
+            "description": "必須. 1つの接続が1日に保たれる時間（時間単位）です。",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbpsUp": {
+            "title": "上りの帯域(kbps)",
+            "description": "必須. 1つの接続の上り（アクターから end へ）の平均帯域です（kbps 単位）。",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbpsDown": {
+            "title": "下りの帯域(kbps)",
+            "description": "必須. 1つの接続の下り（end からアクターへ）の平均帯域です（kbps 単位）。",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "protocol": {
+            "title": "プロトコル",
+            "description": "必須. 受け口のプロトコルです。例: https, http3, websocket, grpc, smtp, sms, sip, mqtt, amqp, sftp, rtmp, webrtc, udp, tcp, rdp, ssh。一覧に無い値も使えます。 https://docs.reindeer.tech/index_ja.html#s-trigger-protocol",
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9.+-]*$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/stateActionTypeOfTrigger.json",
+      "schema": {
+        "title": "ステートアクションタイプのトリガーオブジェクト",
+        "description": "監視しているリソースの状態が条件を満たしたときに始まる処理です（アラーム、予算の超過、セキュリティの検知など）。 https://docs.reindeer.tech/index_ja.html#s-trigger-stateaction",
+        "type": "object",
+        "required": [
+          "type",
+          "description",
+          "infoType",
+          "ports",
+          "internet",
+          "restriction",
+          "onlineRps",
+          "reqMonth",
+          "kbRequest",
+          "kbResponse",
+          "start",
+          "end",
+          "endpointTitle",
+          "storedRatio",
+          "condition"
+        ],
+        "properties": {
+          "type": {
+            "title": "トリガーの種類",
+            "description": "必須. 固定値： 'stateAction'. https://docs.reindeer.tech/index_ja.html#s-trigger-stateaction",
+            "type": "string",
+            "enum": [
+              "stateAction"
+            ]
+          },
+          "description": {
+            "title": "トリガーの説明",
+            "description": "必須. トリガーの説明です。トリガーの目的を端的に示すメモであるべきです。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-stateaction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "infoType": {
+            "title": "情報の種別",
+            "description": "必須. InfoType objectに対する参照です。このトリガーが扱う情報の種別を定義します。 https://docs.reindeer.tech/index_ja.html#s-infoType",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "ports": {
+            "title": "ポート番号",
+            "description": "必須. このトリガーのエンドポイント（endフィールドで定義）が利用するポート番号です。 https://docs.reindeer.tech/index_ja.html#s-trigger-stateaction",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "internet": {
+            "title": "インターネット通信",
+            "description": "必須. この接続がインターネット経由か否かを示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-stateaction",
+            "type": "boolean"
+          },
+          "restriction": {
+            "title": "通信制限",
+            "description": "必須. このトリガーのエンドポイントにおける、接続元IP、ドメインなどの接続制限の有無を示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-stateaction",
+            "type": "boolean"
+          },
+          "onlineRps": {
+            "title": "秒間リクエスト",
+            "description": "必須. このトリガーが発火した時の、1秒当たりの要求数。 開始点（startフィールド）からエンドポイント（endフィールド）に 対するリクエストの要求性能を明示します。 たとえば、毎週月曜日の朝にバッチシステムが動作し、各バッチが1秒間に2回のスループットで外部APIにアクセスする場合は2.0です。 https://docs.reindeer.tech/index_ja.html#s-trigger-stateaction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "reqMonth": {
+            "title": "月間リクエスト",
+            "description": "必須. 開始点からエンドポイントへの月間リクエスト数です。 たとえば、バッチシステムが毎月1000人に3回メールマガジンを送信する場合、この値は3000になります。 https://docs.reindeer.tech/index_ja.html#s-trigger-stateaction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbRequest": {
+            "title": "リクエストサイズ (KB)",
+            "description": "必須. 開始点からエンドポイントに対するリクエストあたりのデータサイズをKB単位で明示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-stateaction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "kbResponse": {
+            "title": "レスポンスサイズ (KB)",
+            "description": "必須. 開始点からエンドポイントへのリクエスト毎に生じるレスポンスのデータサイズをKB単位で明示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-stateaction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "start": {
+            "title": "トリガーの開始点",
+            "description": "必須. トリガーの開始点です。resource object への参照でなければなりません（決まった時刻に処理を始めるスケジューラや、状態の変化を知らせるリソース）。 https://docs.reindeer.tech/index_ja.html#s-trigger-stateaction",
+            "oneOf": [
+              {
+                "type": "object",
+                "$ref": "https://reindeer.tech/adl-schema/v3/refToResources.json"
+              }
+            ]
+          },
+          "end": {
+            "title": "トリガーのエンドポイント",
+            "description": "必須. トリガーのエンドポイントを示します。 resource object または actor objectへの参照でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-stateaction",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "$ref": "https://reindeer.tech/adl-schema/v3/refToActor.json"
+                },
+                {
+                  "type": "object",
+                  "$ref": "https://reindeer.tech/adl-schema/v3/refToResources.json"
+                }
+              ]
+            }
+          },
+          "endpointTitle": {
+            "title": "エンドポイントの名称",
+            "description": "必須. エンドポイントの名称です。キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の70文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-stateaction",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "storedRatio": {
+            "title": "データの保管率",
+            "description": "必須. endが受信したデータのうち、endに保管されるデータサイズの比率を示します。 例えば、このトリガーでアクターがendに送信するデータの全てをend上で保管する場合、この値は1.0になります。データを 保管しない場合は0です。 https://docs.reindeer.tech/index_ja.html#s-trigger-stateaction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/rangeValue.json"
+          },
+          "storedInfoType": {
+            "title": "保管するデータの種類",
+            "description": "InfoType objectへの参照です。このトリガーのendが保管するデータの種類を示します。 https://docs.reindeer.tech/index_ja.html#s-trigger-stateaction",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/refToInfoType.json"
+          },
+          "storageDescription": {
+            "title": "保管データの目的",
+            "description": "ストレージの説明です。 このテキストは外部ツールによる検索インデックスとして使われる可能性があり、ストレージの目的を的確に表現すべきです。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-trigger-stateaction",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "_meta": {
+            "title": "由来メタデータ",
+            "description": "OPTIONAL. 作成者・確信度のメタデータ。省略時は AI が確信度 1.0 で作成したとみなされます。",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          },
+          "condition": {
+            "title": "状態の条件",
+            "description": "必須. 処理が始まる状態の条件の説明です。例: エラーが5分間に10件を超えたとき。キーはISO 639-1の2文字の言語コードでなければなりません。",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "protocol": {
+            "title": "プロトコル",
+            "description": "任意. 受け口のプロトコルです。例: https, http3, websocket, grpc, smtp, sms, sip, mqtt, amqp, sftp, rtmp, webrtc, udp, tcp, rdp, ssh。一覧に無い値も使えます。 https://docs.reindeer.tech/index_ja.html#s-trigger-protocol",
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9.+-]*$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "uri": "https://reindeer.tech/adl-schema/v3/devicesTypeOfActor.json",
+      "schema": {
+        "title": "機器タイプのアクターオブジェクト",
+        "description": "同じ種類の機器の集まり（センサー・車載の機器・端末など）です。num は台数です。 https://docs.reindeer.tech/index_ja.html#s-actor-devices",
+        "type": "object",
+        "required": [
+          "type",
+          "title",
+          "description",
+          "num",
+          "sourceIdentification"
+        ],
+        "properties": {
+          "type": {
+            "title": "アクターの種類",
+            "description": "必須. 固定値： 'persons' https://docs.reindeer.tech/index_ja.html#s-actor-persons",
+            "type": "string",
+            "enum": [
+              "devices"
+            ]
+          },
+          "title": {
+            "title": "アクター名",
+            "description": "必須. アクターの名称です。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の70文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-actor-persons",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
+          },
+          "description": {
+            "title": "アクターの説明",
+            "description": "必須. アクターの説明です。 このテキストは外部ツールによる検索インデックスとして使われる可能性があります。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-actor-persons",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
+          },
+          "num": {
+            "title": "台数",
+            "description": "必須. 機器の台数です。",
+            "type": "integer",
+            "minimum": 1
+          },
+          "sourceIdentification": {
+            "title": "IP/ドメインなどによる接続元の特定",
+            "description": "必須. 特定のIPアドレス範囲やドメイン名などで識別できるかどうかを意味します。 trueの場合、identificationGroup フィールドは必須です。 https://docs.reindeer.tech/index_ja.html#s-actor-persons",
+            "type": "boolean"
+          },
+          "identificationGroup": {
+            "title": "IPアドレス範囲などのグループ名",
+            "description": "IPアドレス範囲やドメイン名など。 sourceIdentification フィールドがtrueの場合は必須です。そして、sourceIdentification がfalseの場合、指定してはいけません。 https://docs.reindeer.tech/index_ja.html#s-actor-persons",
+            "type": "string",
+            "$ref": "https://reindeer.tech/adl-schema/v3/ip.json"
+          },
+          "_meta": {
+            "title": "由来メタデータ",
+            "description": "OPTIONAL. 作成者・確信度のメタデータ。省略時は AI が確信度 1.0 で作成したとみなされます。",
+            "type": "object",
+            "$ref": "https://reindeer.tech/adl-schema/v3/meta.json"
+          }
+        },
+        "dependencies": {
+          "identificationGroup": {
+            "properties": {
+              "sourceIdentification": {
+                "enum": [
+                  true
+                ]
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ]
+}
