@@ -1830,7 +1830,7 @@
         "properties": {
           "type": {
             "title": "Type of actor",
-            "description": "REQUIRED. Fixed value, 'persons'. https://docs.reindeer.tech/index.html#s-actor-persons",
+            "description": "REQUIRED. Fixed value, 'devices'. https://docs.reindeer.tech/index.html#s-actor-devices",
             "type": "string",
             "enum": [
               "devices"
@@ -1838,13 +1838,13 @@
           },
           "title": {
             "title": "The title of the group of persons",
-            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 70 letters string of UTF-8. https://docs.reindeer.tech/index.html#s-actor-persons",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 70 letters string of UTF-8. https://docs.reindeer.tech/index.html#s-actor-devices",
             "type": "object",
             "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
           },
           "description": {
             "title": "The description of the actor",
-            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. https://docs.reindeer.tech/index.html#s-actor-persons",
+            "description": "REQUIRED. The key MUST be 2 letter language code of ISO 639-1. And the value MUST be within 500 letters string of UTF-8. https://docs.reindeer.tech/index.html#s-actor-devices",
             "type": "object",
             "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
           },
@@ -1856,12 +1856,12 @@
           },
           "sourceIdentification": {
             "title": "IP, Domain or the other identification",
-            "description": "REQUIRED. Whether specific IP address range or domains is assigned or not. If true, identificationGroup property is required. https://docs.reindeer.tech/index.html#s-actor-persons",
+            "description": "REQUIRED. Whether specific IP address range or domains is assigned or not. If true, identificationGroup property is required. https://docs.reindeer.tech/index.html#s-actor-devices",
             "type": "boolean"
           },
           "identificationGroup": {
             "title": "The group name of IP address range, domains and so on.",
-            "description": "The group name of IP address range, domains and so on. Required when sourceIdentification propery is true. And MUST NOT use when sourceIdentification propery is false. https://docs.reindeer.tech/index.html#s-actor-persons",
+            "description": "The group name of IP address range, domains and so on. Required when sourceIdentification propery is true. And MUST NOT use when sourceIdentification propery is false. https://docs.reindeer.tech/index.html#s-actor-devices",
             "type": "string",
             "$ref": "https://reindeer.tech/adl-schema/v3/ip.json"
           },
