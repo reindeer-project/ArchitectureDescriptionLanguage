@@ -1830,7 +1830,7 @@
         "properties": {
           "type": {
             "title": "アクターの種類",
-            "description": "必須. 固定値： 'persons' https://docs.reindeer.tech/index_ja.html#s-actor-persons",
+            "description": "必須. 固定値： 'devices' https://docs.reindeer.tech/index_ja.html#s-actor-devices",
             "type": "string",
             "enum": [
               "devices"
@@ -1838,13 +1838,13 @@
           },
           "title": {
             "title": "アクター名",
-            "description": "必須. アクターの名称です。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の70文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-actor-persons",
+            "description": "必須. アクターの名称です。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の70文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-actor-devices",
             "type": "object",
             "$ref": "https://reindeer.tech/adl-schema/v3/title.json"
           },
           "description": {
             "title": "アクターの説明",
-            "description": "必須. アクターの説明です。 このテキストは外部ツールによる検索インデックスとして使われる可能性があります。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-actor-persons",
+            "description": "必須. アクターの説明です。 このテキストは外部ツールによる検索インデックスとして使われる可能性があります。 キーはISO 639-1の2文字の言語コードでなければなりません。 そして値はUTF-8の500文字以内の文字列でなければなりません。 https://docs.reindeer.tech/index_ja.html#s-actor-devices",
             "type": "object",
             "$ref": "https://reindeer.tech/adl-schema/v3/description.json"
           },
@@ -1856,12 +1856,12 @@
           },
           "sourceIdentification": {
             "title": "IP/ドメインなどによる接続元の特定",
-            "description": "必須. 特定のIPアドレス範囲やドメイン名などで識別できるかどうかを意味します。 trueの場合、identificationGroup フィールドは必須です。 https://docs.reindeer.tech/index_ja.html#s-actor-persons",
+            "description": "必須. 特定のIPアドレス範囲やドメイン名などで識別できるかどうかを意味します。 trueの場合、identificationGroup フィールドは必須です。 https://docs.reindeer.tech/index_ja.html#s-actor-devices",
             "type": "boolean"
           },
           "identificationGroup": {
             "title": "IPアドレス範囲などのグループ名",
-            "description": "IPアドレス範囲やドメイン名など。 sourceIdentification フィールドがtrueの場合は必須です。そして、sourceIdentification がfalseの場合、指定してはいけません。 https://docs.reindeer.tech/index_ja.html#s-actor-persons",
+            "description": "IPアドレス範囲やドメイン名など。 sourceIdentification フィールドがtrueの場合は必須です。そして、sourceIdentification がfalseの場合、指定してはいけません。 https://docs.reindeer.tech/index_ja.html#s-actor-devices",
             "type": "string",
             "$ref": "https://reindeer.tech/adl-schema/v3/ip.json"
           },
